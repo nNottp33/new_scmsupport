@@ -1,0 +1,6 @@
+.env
+app.env
+.env.test
+
+*.DS_Store
+node_modules/*
