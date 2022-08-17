@@ -1,0 +1,11 @@
+{
+  "name": "new_scmsupport",
+  "version": "1.0.0",
+  "description": "created by Nattapon.p",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nattapon.p",
+  "license": "ISC"
+}
