@@ -1,4 +1,5 @@
 const { GetMember } = require("../services/service");
+const httpStatus = require("http-status");
 
 // check user
 const CheckUser = async (req, res, next) => {
@@ -6,12 +7,12 @@ const CheckUser = async (req, res, next) => {
 
   let resultMember = await GetMember(mem_id);
 
-  resultMember.status
-    ? next()
-    : res.json({
-        status: resultMember.status,
-        message: resultMember.error.message,
-      });
+  if (!resultMember.status) {
+    res.status(httpStatus.NOT_FOUND).render("pages/error.ejs");
+  } else {
+    req.body = resultMember.data;
+    next();
+  }
 };
 
 module.exports = {

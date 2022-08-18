@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../partials/header.ejs'); %>
+  </head>
+  <body>
+    <div v-cloak id="app">
+      <h1 class="m-3">Hi, <%= nameuser %></h1>
+    </div>
+
+    <footer><%- include('../../partials/footer.ejs'); %></footer>
+
+    <script>
+      const { createApp } = Vue;
+
+      const app = createApp({
+        data() {
+          return {};
+        },
+
+        methods: {},
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>

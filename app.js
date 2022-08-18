@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const chalk = require("chalk");
 const { port } = require("./src/configs/config");
 const routes = require("./src/routes/v1/route");
-const { CheckUser } = require("./src/middlewares/middleware");
+const { CheckUser, CheckErr } = require("./src/middlewares/middleware");
 
 const app = express();
 
@@ -20,21 +20,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // set public assets
-app.use("/public", express.static(__dirname + "../public/assets"));
+app.use("/public", express.static(path.join(__dirname, "/public/")));
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "/public/assets/images/")),
+);
+app.use("/css", express.static(path.join(__dirname, "/public/assets/css/")));
+
+// set view
+app.set("views", "./src/views");
+app.set("view engine", "ejs");
 
 // middleware
 app.use(CheckUser);
 
-// set view
-app.set("/views", path.join(__dirname, "../public/pages"));
-
 // v1 api routes
 app.use("/api/v1", routes);
-
-// send back a 404 error for any unknown api request
-// app.use((req, res, next) => {
-//   return res.status(400).render("../pages/template/error/404.ejs");
-// });
 
 app.listen(port || 3033, () =>
   console.log(
