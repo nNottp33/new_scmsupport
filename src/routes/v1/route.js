@@ -1,6 +1,10 @@
 const router = require("express").Router();
-const userController = require("../../controllers/v1/user.controller");
+const userRouter = require("./user.router");
+// const adminRouter = require("./admin.router");
 
-router.get("/support/scm", userController.CheckUser);
+const Auth = require("../../middlewares/auth");
+
+router.use("/user", Auth.AuthUser, userRouter);
+// router.use("/admin", adminRouter);
 
 module.exports = router;
