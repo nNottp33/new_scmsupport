@@ -18,6 +18,16 @@ const app = express();
 app.use(cors());
 app.options("*", cors());
 
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(
+  sessions({
+    secret: randomString.RandomString(20),
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+  }),
+);
+
 // parse json request body
 app.use(express.json());
 
@@ -41,21 +51,13 @@ app.use(CheckUser);
 
 // session cookie
 app.use(cookieParser());
-app.use(
-  sessions({
-    secret: randomString.RandomString(30),
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 },
-    resave: false,
-  }),
-);
 
 // v1 api routes
 app.use("/", routes);
 
-app.use((req, res, next) => {
-  return res.status(httpStatus.NOT_FOUND).render("pages/error");
-});
+// app.use((req, res, next) => {
+//   return res.status(httpStatus.NOT_FOUND).render("pages/error");
+// });
 
 app.listen(port || 3033, () =>
   console.log(

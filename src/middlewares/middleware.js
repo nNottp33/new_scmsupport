@@ -1,35 +1,40 @@
 const { GetMember } = require("../services/service");
 const httpStatus = require("http-status");
+const logger = require("../configs/logger");
 
-// check user
 const CheckUser = async (req, res, next) => {
   let { mem_id } = req.query;
 
-  if (!mem_id) {
-    res.status(httpStatus.NOT_FOUND).render("pages/error");
+  // check session
+  if (req.session.sessionsData) {
+    return next();
   }
 
-  if (mem_id) {
-    let resultMember = await GetMember(mem_id);
+  // check params query
+  if (!mem_id) return res.status(httpStatus.NOT_FOUND).render("pages/error");
 
-    if (!resultMember.status) {
-      res.status(httpStatus.NOT_FOUND).render("pages/error");
-    }
+  // fetch user with api for check
+  let resultMember = await GetMember(mem_id);
 
-    if (resultMember.status) {
-      // req.body = resultMember.data;
-      req.session = {
-        role: "user",
-        member_id: resultMember.data[0].member_id,
-        member_name: resultMember.data[0].member_name,
-        email: resultMember.data[0].member_id,
-        register_date: resultMember.data[0].register_date,
-        expire_date: resultMember.data[0].expire_date,
-      };
-
-      next();
-    }
+  // if user not found
+  if (!resultMember.status) {
+    logger.error(resultMember.error.message);
+    return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
+
+  // set the session
+  req.session.sessionsData = {
+    isAuth: true,
+    role: "user",
+    member_id: resultMember.data[0].member_id,
+    member_name: resultMember.data[0].member_name,
+    email: resultMember.data[0].member_id,
+    register_date: resultMember.data[0].register_date,
+    expire_date: resultMember.data[0].expire_date,
+  };
+
+  logger.info("Set session!");
+  next();
 };
 
 module.exports = {
