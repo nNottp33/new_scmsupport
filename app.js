@@ -37,10 +37,9 @@ app.use(express.urlencoded({ extended: true }));
 // set public assets
 app.use("/public", express.static(path.join(__dirname, "/public/")));
 app.use(
-  "/images",
-  express.static(path.join(__dirname, "/public/assets/images/")),
+  "/assets",
+  express.static(path.join(__dirname, "/public/assets/")),
 );
-app.use("/css", express.static(path.join(__dirname, "/public/assets/css/")));
 
 // set view
 app.set("views", "./src/views");
