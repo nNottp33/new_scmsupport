@@ -1,3 +1,15 @@
 .content {
-    padding: 2vh 10vw;
+    padding: 2vh 6vw;
+}
+
+.content-add__ticket {
+    text-align: end;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.fas {
+    color: #98ec2d;
 }

@@ -4,19 +4,26 @@
     <%- include('../../partials/head.ejs'); %>
   </head>
   <body class="g-sidenav-show bg-gray-100">
-    <!-- <%- include('../../partials/sidebar.ejs'); %> -->
-
+    <%- include('../../partials/navbar.ejs'); %>
     <main
       class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content"
     >
-      <%- include('../../partials/navbar.ejs'); %>
-
-      <div v-cloak id="app" class="container-fluid py-4">
+      <div v-cloak id="app" class="container-fluid py-2">
         <div class="row">
           <div class="col-12">
             <div class="card mb-4">
-              <div class="card-header pb-0">
-                <h6>Authors table</h6>
+              <div class="card-header pb-3">
+                <div class="row">
+                  <div class="col-3 col-md-3"><h6>Authors table</h6></div>
+                  <div class="col-9 col-md-9 content-add__ticket">
+                    <a
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#newTicketModal"
+                      ><i class="fas fa-plus-circle"></i> New Ticket</a
+                    >
+                  </div>
+                </div>
               </div>
               <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
@@ -335,6 +342,40 @@
       </div>
     </main>
 
+    <!-- new ticket Modal -->
+    <div
+      class="modal fade"
+      id="newTicketModal"
+      tabindex="-1"
+      aria-labelledby="newTicketModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newTicketModalLabel">New Ticket</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">...</div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Create Ticket</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- new ticket modal end -->
     <%- include('../../partials/footer.ejs'); %>
 
     <script>
