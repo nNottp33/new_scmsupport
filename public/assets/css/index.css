@@ -7,9 +7,48 @@
 }
 
 [v-cloak] {
-    display: none;
+    display: none
 }
 
 .fas {
     color: #98ec2d;
+}
+
+.sub-title {
+    /* color: #b6b6b6; */
+    color: #ff8000;
+    font-size: 0.775rem;
+    line-height: 1.5;
+}
+
+.img-logo {
+    max-width: 80px;
+}
+
+.img-logo-text {
+    max-width: 120px;
+}
+
+.img-logo,
+.img-logo-text {
+    width: 100%;
+}
+
+.button {
+    box-shadow: 0 4px 7px -1px rgb(0 0 0 / 11%),
+        0 2px 4px -1px rgb(0 0 0 / 7%);
+    background-position-x: 25%;
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #FF9300;
+    --bs-btn-border-color: #FF9300;
+    font-size: var(--bs-btn-font-size);
+    font-weight: var(--bs-btn-font-weight);
+    line-height: var(--bs-btn-line-height);
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
+    border-radius: 6px;
+    background-color: var(--bs-btn-bg);
+    transition: all 0.15s ease-in;
 }

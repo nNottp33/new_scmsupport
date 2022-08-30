@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
 .wrapper {
   max-width: 1140px;
   padding-left: 1rem;
@@ -39,10 +40,10 @@ body {
 
 .button {
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   color: #fff;
-  background-color: #2fa0f6;
+  background-color: #ff6213;
   min-width: 120px;
   padding: 0.5rem 1rem;
   border-radius: 5px;

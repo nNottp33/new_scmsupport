@@ -54,9 +54,9 @@ app.use(cookieParser());
 // v1 api routes
 app.use("/", routes);
 
-// app.use((req, res, next) => {
-//   return res.status(httpStatus.NOT_FOUND).render("pages/error");
-// });
+app.use((req, res, next) => {
+  return res.status(httpStatus.NOT_FOUND).render("pages/error");
+});
 
 app.listen(port || 3033, () =>
   console.log(

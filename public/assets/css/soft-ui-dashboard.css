@@ -1,9 +1,3 @@
-/*!
- * Bootstrap v5.2.0-beta1 (https://getbootstrap.com/)
- * Copyright 2011-2022 The Bootstrap Authors
- * Copyright 2011-2022 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
 :root {
   --bs-blue: #63B3ED;
   --bs-indigo: #596CFF;
@@ -276,7 +270,7 @@ a {
 }
 
 a:hover {
-  color: var(--bs-link-hover-color);
+  color: #FF9300;
   text-decoration: none;
 }
 
@@ -2755,9 +2749,9 @@ progress {
 .form-control:focus {
   color: #495057;
   background-color: #fff;
-  border-color: #e293d3;
+  border-color: #ffc267;
   outline: 0;
-  box-shadow: 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 2px #ffc267;
 }
 
 .form-control::-webkit-date-and-time-value {
@@ -2903,9 +2897,9 @@ textarea.form-control-lg {
 }
 
 .form-select:focus {
-  border-color: #e293d3;
+  border-color: #ffc267;
   outline: 0;
-  box-shadow: 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 2px #ffc267;
 }
 
 .form-select[multiple],
@@ -3103,11 +3097,11 @@ textarea.form-control-lg {
 }
 
 .form-range:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 1px #fff, 0 0 0 2px #ffc267;
 }
 
 .form-range:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 1px #fff, 0 0 0 2px #ffc267;
 }
 
 .form-range::-moz-focus-outer {
@@ -3585,7 +3579,7 @@ textarea.form-control.is-invalid {
   --bs-btn-font-size: 0.75rem;
   --bs-btn-font-weight: 700;
   --bs-btn-line-height: 1.4;
-  --bs-btn-color: #67748e;
+  --bs-btn-color: #ffffff;
   --bs-btn-bg: transparent;
   --bs-btn-border-width: 1px;
   --bs-btn-border-color: transparent;
@@ -3617,14 +3611,14 @@ textarea.form-control.is-invalid {
 }
 
 .btn:hover {
-  color: var(--bs-btn-hover-color);
+  color: #FF9300;
   background-color: var(--bs-btn-hover-bg);
   border-color: var(--bs-btn-hover-border-color);
 }
 
 .btn-check:focus+.btn,
 .btn:focus {
-  color: var(--bs-btn-hover-color);
+  color: #FF9300;
   background-color: var(--bs-btn-hover-bg);
   border-color: var(--bs-btn-hover-border-color);
   outline: 0;
@@ -3664,12 +3658,12 @@ fieldset:disabled .btn {
   --bs-btn-bg: #FF9300;
   --bs-btn-border-color: #FF9300;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #ad0a87;
-  --bs-btn-hover-border-color: #a20a7f;
-  --bs-btn-focus-shadow-rgb: 211, 48, 173;
+  --bs-btn-hover-bg: #e28400;
+  --bs-btn-hover-border-color: #e28400;
+  --bs-btn-focus-shadow-rgb: 82, 99, 126;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #a20a7f;
-  --bs-btn-active-border-color: #980977;
+  --bs-btn-active-bg: #e28400;
+  --bs-btn-active-border-color: #e28400;
   --bs-btn-active-shadow: none;
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #FF9300;
@@ -5410,7 +5404,7 @@ fieldset:disabled .btn {
 
 .accordion-button:focus {
   z-index: 3;
-  border-color: var(--bs-accordion-btn-focus-border-color);
+  border-color: #FF9300;
   outline: 0;
   box-shadow: var(--bs-accordion-btn-focus-box-shadow);
 }
@@ -21445,7 +21439,7 @@ fieldset:disabled .btn {
 
 .fixed-plugin .badge:hover,
 .fixed-plugin .badge.active {
-  border-color: #344767;
+  border-color: #FF9300;
 }
 
 .fixed-plugin .btn.bg-gradient-primary:not(:disabled):not(.disabled) {
@@ -21520,7 +21514,7 @@ fieldset:disabled .btn {
 }
 
 .focused {
-  box-shadow: 0 0 0 2px #e9aede;
+  box-shadow: 0 0 0 2px #ffc267;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -21671,7 +21665,7 @@ label,
 }
 
 .bg-gradient-primary {
-  background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%);
+  background-image: linear-gradient(310deg, #fc4a1a 0%, #f7b733 100%);
 }
 
 .bg-gradient-secondary {
