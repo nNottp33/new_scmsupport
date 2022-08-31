@@ -3,10 +3,12 @@
   <head>
     <%- include('../../partials/head.ejs'); %>
   </head>
-  <body class="g-sidenav-show bg-gray-100">
+  <body>
+    <!-- navbar -->
     <%- include('../../partials/navbar.ejs'); %>
 
     <div v-cloak id="app">
+      <!-- content -->
       <main
         class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content"
       >
@@ -145,17 +147,20 @@
             </div>
             <div class="modal-body">
               <div class="px-4">
-                <form role="form">
+                <form @submit.prevent="submitNewTicket">
                   <div class="form-group">
                     <label>Type</label>
                     <div class="sub-title">ประเภท</div>
                     <div class="mt-1 mb-3">
-                      <select v-model="selectType" class="form-control">
+                      <select v-model="form.selectType" class="form-control">
                         <option value="" disabled selected>
-                          Select your option
+                          Select your option / เลือกประเภทปัญหา
                         </option>
-                        <option>Ketchup</option>
-                        <option>Barbecue</option>
+                        <% for (var i = 0; i < category.length; i++) { %>
+                        <option value="<%= category[i].catalog_id %>">
+                          <%- category[i].catalog_nameTH %>
+                        </option>
+                        <% } %>
                       </select>
                     </div>
                   </div>
@@ -165,35 +170,43 @@
                     <div class="sub-title">รายละเอียด</div>
                     <div class="mt-1 mb-3">
                       <textarea
+                        v-model="form.inputDetail"
                         class="form-control"
                         placeholder="รายละเอียด / detail"
                         aria-label="รายละเอียด / detail"
                       ></textarea>
                     </div>
                   </div>
-                  {{ selectType }}
+
                   <div class="form-group">
                     <label>Attach file</label>
                     <div class="sub-title">แนบไฟล์</div>
                     <div class="mt-1 mb-3">
-                      <input type="file" class="form-control" />
+                      <input
+                        @change="uploadFile($event)"
+                        ref="file"
+                        type="file"
+                        class="form-control"
+                        name="file"
+                      />
                     </div>
+                  </div>
+
+                  <div class="form-button">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+
+                    <button type="submit" class="btn bg-gradient-primary">
+                      Create Ticket
+                    </button>
                   </div>
                 </form>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-
-              <button type="button" class="btn bg-gradient-primary">
-                Create Ticket
-              </button>
             </div>
           </div>
         </div>
@@ -206,14 +219,49 @@
     <script type="text/javascript">
       const { createApp } = Vue;
 
+      const baseUrl = "<%- baseUrl %>";
+
       const app = createApp({
         data() {
           return {
-            selectType: "",
+            form: {
+              selectType: "",
+              inputDetail: "",
+              file: "",
+            },
           };
         },
 
-        methods: {},
+        methods: {
+          uploadFile(event) {
+            this.form.file = this.$refs.file.files[0];
+          },
+
+          submitNewTicket() {
+            let formData = new FormData();
+
+            formData.append("file", this.form.file);
+            // axios request add ticket
+            axios
+              .post(`${baseUrl}user/add/new/ticket`, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+                data: formData,
+              })
+              .then(function (response) {
+                // if response OK
+                if (response.status === 200) {
+                }
+
+                if (response.status === 400) {
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          },
+        },
       });
 
       app.mount("#app");

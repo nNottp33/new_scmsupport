@@ -1,6 +1,9 @@
 const config = require("./config");
-const conKnex = require('knex')({
-    client: 'mysql',
+const knex = require('knex')
+
+// create a pool connection
+const conKnex = knex.default({
+    client: 'mysql2',
     connection: {
         host: config.db.host,
         port: 3306,

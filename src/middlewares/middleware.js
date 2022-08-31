@@ -28,7 +28,7 @@ const CheckUser = async (req, res, next) => {
     role: "user",
     member_id: resultMember.data[0].member_id,
     member_name: resultMember.data[0].member_name,
-    email: resultMember.data[0].member_id,
+    email: resultMember.data[0].email,
     register_date: resultMember.data[0].register_date,
     expire_date: resultMember.data[0].expire_date,
   };
