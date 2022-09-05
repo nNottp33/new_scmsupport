@@ -6,7 +6,9 @@ const chalk = require("chalk");
 const cookieParser = require("cookie-parser");
 const sessions = require("express-session");
 const httpStatus = require("http-status");
+const bodyParser = require("body-parser");
 
+// custom modules
 const { port } = require("./src/configs/config");
 const routes = require("./src/routes/v1/route");
 const { CheckUser, CheckErr } = require("./src/middlewares/middleware");
@@ -28,11 +30,12 @@ app.use(
   }),
 );
 
-// parse json request body
+// parse json
 app.use(express.json());
 
-// parse urlencoded request body
-app.use(express.urlencoded({ extended: true }));
+// parse urlencoded 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 // set public assets
 app.use("/public", express.static(path.join(__dirname, "/public/")));

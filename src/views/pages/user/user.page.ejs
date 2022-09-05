@@ -152,7 +152,11 @@
                     <label>Type</label>
                     <div class="sub-title">ประเภท</div>
                     <div class="mt-1 mb-3">
-                      <select v-model="form.selectType" class="form-control">
+                      <select
+                        v-model="form.selectType"
+                        name="selectedType"
+                        class="form-control"
+                      >
                         <option value="" disabled selected>
                           Select your option / เลือกประเภทปัญหา
                         </option>
@@ -170,6 +174,7 @@
                     <div class="sub-title">รายละเอียด</div>
                     <div class="mt-1 mb-3">
                       <textarea
+                        name="detail"
                         v-model="form.inputDetail"
                         class="form-control"
                         placeholder="รายละเอียด / detail"
@@ -183,11 +188,11 @@
                     <div class="sub-title">แนบไฟล์</div>
                     <div class="mt-1 mb-3">
                       <input
+                        name="fileUpload"
                         @change="uploadFile($event)"
                         ref="file"
                         type="file"
                         class="form-control"
-                        name="file"
                       />
                     </div>
                   </div>
@@ -227,27 +232,27 @@
             form: {
               selectType: "",
               inputDetail: "",
-              file: "",
+              fileUpload: "",
             },
           };
         },
 
         methods: {
           uploadFile(event) {
-            this.form.file = this.$refs.file.files[0];
+            // this.form.fileUpload = this.$refs.file.files[0];
+            this.form.fileUpload = event.target.files[0];
           },
 
           submitNewTicket() {
-            let formData = new FormData();
+            if (!this.form.selectType || !this.form.detail) {
+              toast.show();
+            }
 
-            formData.append("file", this.form.file);
-            // axios request add ticket
             axios
-              .post(`${baseUrl}user/add/new/ticket`, {
+              .post(`${baseUrl}user/add/new/ticket`, this.form, {
                 headers: {
                   "Content-Type": "multipart/form-data",
                 },
-                data: formData,
               })
               .then(function (response) {
                 // if response OK

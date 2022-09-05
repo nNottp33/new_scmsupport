@@ -12,7 +12,8 @@ const UserThread = async (req, res) => {
   try {
     resultCategory = await conKnex.select().from('d_catalog').orderBy('catalog_id', 'ASC');
   } catch (err) {
-    logger.error(err.sqlMessage);
+    logger.error(err);
+    return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 
   return res.status(httpStatus.OK).render("pages/user/user.page.ejs", {
@@ -32,9 +33,10 @@ const DetailThread = async (req, res) => {
 };
 
 const NewTicket = async (req, res) => {
-  console.log(req.body);
-
-  res.send(req.body);
+  res.json({
+    body: req.body,
+    file: req.file
+  });
 }
 
 module.exports = {

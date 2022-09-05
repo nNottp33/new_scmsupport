@@ -2,7 +2,9 @@
 app.env
 .env.test
 
-*.DS_Store
 node_modules/*
+/public/files_upload/*
 
+*.DS_Store
 *.log
+
