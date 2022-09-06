@@ -21,6 +21,12 @@
     line-height: 1.5;
 }
 
+.sub-title-warning {
+    color: #ffc5c5;
+    font-size: 0.775rem;
+    line-height: 1.5;
+}
+
 .img-logo {
     max-width: 80px;
 }
@@ -154,4 +160,22 @@
     margin-top: 16px;
     margin-bottom: 16px;
     margin-left: 10px;
+}
+
+.v-alert__icon.v-icon {
+    margin: auto;
+}
+
+.v-application a {
+    color: #222 !important;
+    text-decoration: none;
+}
+
+.v-application a:hover {
+    color: #FF9300 !important;
+    text-decoration: none;
+}
+
+.v-alert__content {
+    margin-left: 20px !important;
 }

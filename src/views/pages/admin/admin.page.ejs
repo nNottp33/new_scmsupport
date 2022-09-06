@@ -15,18 +15,13 @@
 
     <footer><%- include('../../partials/user/footer.ejs'); %></footer>
 
-    <script>
-      const { createApp } = Vue;
-
-      const app = createApp({
-        data() {
-          return {};
+    <script type="text/javascript">
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello Vue!",
         },
-
-        methods: {},
       });
-
-      app.mount("#app");
     </script>
   </body>
 </html>

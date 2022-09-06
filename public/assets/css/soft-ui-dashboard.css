@@ -5640,6 +5640,7 @@ fieldset:disabled .btn {
   top: -1px;
 }
 
+/* 
 .alert {
   --bs-alert-bg: transparent;
   --bs-alert-padding-x: 1rem;
@@ -5766,7 +5767,7 @@ fieldset:disabled .btn {
 
 .alert-white .alert-link {
   color: #525252;
-}
+} */
 
 @keyframes progress-bar-stripes {
   0% {
@@ -20103,7 +20104,7 @@ fieldset:disabled .btn {
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-.alert-primary {
+/* .alert-primary {
   background-image: linear-gradient(310deg, #7928CA 0%, #d6006c 100%);
 }
 
@@ -20133,7 +20134,7 @@ fieldset:disabled .btn {
 
 .alert-dark {
   background-image: linear-gradient(310deg, #141727 0%, #2c3154 100%);
-}
+} */
 
 .btn-close:focus {
   box-shadow: none;
