@@ -1,3 +1,7 @@
+body {
+    padding: 0 !important;
+}
+
 .content {
     padding: 2vh 6vw;
 }
@@ -23,7 +27,7 @@
 
 .sub-title-warning {
     color: #ffc5c5;
-    font-size: 0.775rem;
+    font-size: 0.8rem;
     line-height: 1.5;
 }
 

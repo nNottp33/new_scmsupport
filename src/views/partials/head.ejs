@@ -1,10 +1,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <title>SCM-Support</title>
+<!-- icon on browser tab -->
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo.png" />
 
 <!-- vuetify -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 
@@ -26,16 +26,20 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 
+<!-- Load vue router -->
+<script src="https://unpkg.com/vue-router@4"></script>
+
 <!-- Font awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 
+<!-- Load for role user only -->
 <% if (role === "user") { %>
 <!-- css for user navbar -->
 <%- include('./user/head.ejs'); %>
 <!-- css for user navbar end -->
 <% } %>
 
-<!-- mystyle -->
+<!-- custom style by nottp33 -->
 <link type="text/css" rel="stylesheet" href="/assets/css/index.css" />
 
 <!-- axios -->
@@ -46,3 +50,8 @@
   integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/4.0.2/moment-range.js"></script>
+
+<!-- Load JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+  integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>

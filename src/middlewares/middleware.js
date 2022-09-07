@@ -29,11 +29,12 @@ const CheckUser = async (req, res, next) => {
     member_id: resultMember.data[0].member_id,
     member_name: resultMember.data[0].member_name,
     email: resultMember.data[0].email,
+    mobile: resultMember.data[0].mobile,
     register_date: resultMember.data[0].register_date,
     expire_date: resultMember.data[0].expire_date,
   };
 
-  logger.info("Set session!");
+  logger.info(`Set session! user: ${resultMember.data[0].member_id} ${resultMember.data[0].member_name} has logged in`)
   next();
 };
 

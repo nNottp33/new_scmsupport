@@ -10,7 +10,9 @@
   <%- include('../../partials/navbar.ejs'); %>
 
   <div v-cloak id="app">
+    <!-- For rendev vuetify  -->
     <v-app>
+
       <!-- content -->
       <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content">
         <div class="container-fluid py-2">
@@ -98,8 +100,8 @@
       </main>
 
       <!-- new ticket Modal -->
-      <div class="modal fade" id="newTicketModal" tabindex="-1" aria-labelledby="newTicketModalLabel"
-        aria-hidden="true">
+      <div class="modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
+        aria-labelledby="newTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
@@ -110,9 +112,18 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
+
+              <!-- overlay loading -->
+              <div class="text-center">
+                <v-overlay v-if="isLoading">
+                  <%- include('../../partials/loading.ejs'); %>
+                </v-overlay>
+              </div>
+
               <!-- alert message -->
               <div>
-                <v-alert :value="alert" dense border="left" transition="scale-transition" type="warning">
+                <v-alert v-model="alert" dense border="left" transition="scale-transition" type="warning">
                   <div class="text-h6">
                     Warning
                   </div>
@@ -121,6 +132,17 @@
                     <div class="sub-title-warning">{{ subTextAlert }}</div>
                   </div>
                 </v-alert>
+              </div>
+
+              <div class="text-center">
+                <v-snackbar v-model="snackbar" :timeout="timeout">
+                  {{ text }}
+                  <template v-slot:action="{ attrs }">
+                    <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+                      Close
+                    </v-btn>
+                  </template>
+                </v-snackbar>
               </div>
 
               <!-- modal content -->
@@ -162,7 +184,7 @@
                   </div>
 
                   <div class="form-button">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button ref="close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                       Close
                     </button>
 
@@ -175,6 +197,8 @@
             </div>
           </div>
         </div>
+      </div>
+
     </v-app>
   </div>
 
@@ -186,8 +210,9 @@
 
     let app = new Vue({
       el: "#app",
-      vuetify: new Vuetify(),
+      vuetify: new Vuetify(), // called vuetify
       data: {
+        isLoading: false,
         alert: false,
         textAlert: '',
         subTextAlert: '',
@@ -196,9 +221,29 @@
           inputDetail: "",
           fileUpload: "",
         },
+        snackbar: false,
+        text: '',
+        timeout: 2000,
       },
 
+      // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
+      watch: {
+
+      },
+
+      // computed จะคืนค่าล่าสุดเท่านั้น
+      computed: {
+
+      },
+
+      // methods จะทำใหม่และคือค่านั้นกลับมา
       methods: {
+        clearModal() {
+          this.form.selectType = ''
+          this.form.inputDetail = ''
+          this.$refs.file.value = null;
+        },
+
         uploadFile(event) {
           this.form.fileUpload = event.target.files[0];
         },
@@ -208,11 +253,14 @@
             this.alert = true;
             this.textAlert = "Please fill out the information completely";
             this.subTextAlert = "กรุณากรอกข้อมูลให้ครบถ้วน"
-            // timeout when alert is triggered
             setTimeout(() => {
               this.alert = false;
-            }, 2000);
+            }, 2000)
+            return
           }
+
+          // show loading
+          this.isLoading = true;
 
           axios
             .post(`${baseUrl}user/add/new/ticket`, this.form, {
@@ -221,15 +269,58 @@
               },
             })
             .then(function (response) {
-              // if response OK
-              if (response.status === 200) {}
+              let {
+                status,
+                message
+              } = response.data
 
-              if (response.status === 400) {}
+              if (status === 200) {
+                this.snackbar = true;
+                this.text = message;
+              }
+
+              if (status === 400) {
+                this.snackbar = true
+                this.text = message;
+              }
             })
             .catch(function (error) {
               console.log(error);
             });
         },
+      },
+
+      beforeCreate() {
+
+      },
+
+      created() {
+
+      },
+
+      beforeMount() {
+
+      },
+
+      mounted() {
+        // clear modal when dismiss
+        $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal)
+      },
+
+      beforeUpdate() {
+
+      },
+
+      updated() {
+
+      },
+
+      beforedestroy() {
+
+      },
+
+      destroyed() {
+
       },
     });
   </script>
