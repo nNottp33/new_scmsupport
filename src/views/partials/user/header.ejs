@@ -1,4 +1,4 @@
-<header  class="site-header position-sticky blur left-auto w-100 top-0 z-index-sticky">
+<header class="site-header position-sticky blur left-auto w-100 top-0 z-index-sticky">
   <div class="site-header__top">
     <div class="wrapper site-header__wrapper">
       <div class="site-header__middle">
@@ -9,25 +9,20 @@
             </div>
 
             <div class="col-9 col-sm-9 px-1 m-auto justify-content-center">
-               <img class="img-logo-text" src="/assets/images/logo-text.png" alt="logo-text" />
+              <img class="img-logo-text" src="/assets/images/logo-text.png" alt="logo-text" />
             </div>
           </div>
         </span>
       </div>
       <div class="site-header__end top">
-        <div>
-          <span class="button">
-          <svg
-            style="width: 16px; height: 16px"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-          >
-            <path
-              d="M272 304h-96C78.8 304 0 382.8 0 480c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32C448 382.8 369.2 304 272 304zM48.99 464C56.89 400.9 110.8 352 176 352h96c65.16 0 119.1 48.95 127 112H48.99zM224 256c70.69 0 128-57.31 128-128c0-70.69-57.31-128-128-128S96 57.31 96 128C96 198.7 153.3 256 224 256zM224 48c44.11 0 80 35.89 80 80c0 44.11-35.89 80-80 80S144 172.1 144 128C144 83.89 179.9 48 224 48z"
-            />
-          </svg>
-
-          <span class="mx-2"><%- memId %> ( <%- memName %> )</span>
+        <div class="d-flex py-1">
+          <div class="text-right">
+            <img src="/assets/images/team-3.jpg" class="avatar avatar-sm me-3">
+          </div>
+          <div class="d-flex flex-column justify-content-center">
+            <h6 class="mb-0 text-dark text-sm"><%- memName %> </h6>
+            <p class="text-xs text-dark mb-0"><%- memId %> </p>
+          </div>
         </div>
         </a>
       </div>
@@ -42,14 +37,12 @@
           </a>
           <ul class="nav__wrapper">
             <li class="nav__item">
-              <a href="#"
-                >Home
+              <a href="#">Home
                 <div class="sub-title">หน้าแรก</div>
               </a>
             </li>
             <li class="nav__item">
-              <a href="#"
-                >History
+              <a href="#">History
                 <div class="sub-title">ประวัติ</div>
               </a>
             </li>
@@ -62,9 +55,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <title>Notifications</title>
             <path
-              d="M256 32V49.88C328.5 61.39 384 124.2 384 200V233.4C384 278.8 399.5 322.9 427.8 358.4L442.7 377C448.5 384.2 449.6 394.1 445.6 402.4C441.6 410.7 433.2 416 424 416H24C14.77 416 6.365 410.7 2.369 402.4C-1.628 394.1-.504 384.2 5.26 377L20.17 358.4C48.54 322.9 64 278.8 64 233.4V200C64 124.2 119.5 61.39 192 49.88V32C192 14.33 206.3 0 224 0C241.7 0 256 14.33 256 32V32zM216 96C158.6 96 112 142.6 112 200V233.4C112 281.3 98.12 328 72.31 368H375.7C349.9 328 336 281.3 336 233.4V200C336 142.6 289.4 96 232 96H216zM288 448C288 464.1 281.3 481.3 269.3 493.3C257.3 505.3 240.1 512 224 512C207 512 190.7 505.3 178.7 493.3C166.7 481.3 160 464.1 160 448H288z"
-            /></svg
-        ></a>
+              d="M256 32V49.88C328.5 61.39 384 124.2 384 200V233.4C384 278.8 399.5 322.9 427.8 358.4L442.7 377C448.5 384.2 449.6 394.1 445.6 402.4C441.6 410.7 433.2 416 424 416H24C14.77 416 6.365 410.7 2.369 402.4C-1.628 394.1-.504 384.2 5.26 377L20.17 358.4C48.54 322.9 64 278.8 64 233.4V200C64 124.2 119.5 61.39 192 49.88V32C192 14.33 206.3 0 224 0C241.7 0 256 14.33 256 32V32zM216 96C158.6 96 112 142.6 112 200V233.4C112 281.3 98.12 328 72.31 368H375.7C349.9 328 336 281.3 336 233.4V200C336 142.6 289.4 96 232 96H216zM288 448C288 464.1 281.3 481.3 269.3 493.3C257.3 505.3 240.1 512 224 512C207 512 190.7 505.3 178.7 493.3C166.7 481.3 160 464.1 160 448H288z" />
+          </svg></a>
       </div>
     </div>
   </div>

@@ -33,64 +33,69 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body px-0 pt-0 pb-2">
-                  <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
-                      <thead>
-                        <tr>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Author
-                          </th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                            Function
-                          </th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Status
-                          </th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Employed
-                          </th>
-                          <th class="text-secondary opacity-7"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% for (var i = 0; i < 10; i++) { %>
-                        <tr>
-                          <td>
-                            <div class="d-flex px-2 py-1">
-                              <div>
-                                <img src="/assets/images/team-2.jpg" class="avatar avatar-sm me-3" alt="user1" />
-                              </div>
-                              <div class="d-flex flex-column justify-content-center">
-                                <h6 class="mb-0 text-sm">John Michael</h6>
-                                <p class="text-xs text-secondary mb-0">
-                                  john@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p class="text-xs font-weight-bold mb-0">Manager</p>
-                            <p class="text-xs text-secondary mb-0">
-                              Organization
-                            </p>
-                          </td>
-                          <td class="align-middle text-center text-sm">
-                            <span class="badge badge-sm bg-gradient-success">Online</span>
-                          </td>
-                          <td class="align-middle text-center">
-                            <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
-                          </td>
-                          <td class="align-middle">
-                            <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                              data-original-title="Edit user">
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <% } %>
-                      </tbody>
-                    </table>
+                <div class="card-body px-3 pt-0 pb-2">
+
+                  <!-- search -->
+                  <div class="w-25 ms-md-auto pe-md-3 d-flex align-items-center mb-3">
+                    <div class="input-group">
+                      <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                      <input v-model="table.search" type="text" class="form-control px-3" placeholder="Type here...">
+                    </div>
+                  </div>
+
+                  <div class="table-responsive px-2">
+                    <v-data-table class="table align-items-center mb-0" :headers="table.headers" :items="table.items"
+                      :search="table.search" :items-per-page="5" class="elevation-1">
+
+                      <!-- DATE CREATED -->
+                      <template v-slot:item.create_date="{ item }">
+                        <span class="text-secondary text-xs font-weight-bold">
+                          {{ moment.unix(item.create_date).format('DD/MM/YYYY h:mm') }}</span>
+                      </template>
+
+
+                      <!-- INFORMER -->
+                      <template v-slot:item.mname="{ item }">
+                        <div class="d-flex px-2 py-1">
+                          <div>
+                            <img src="/assets/images/team-3.jpg" class="avatar avatar-sm me-3" alt="user1">
+                          </div>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
+                            <p class="text-xs text-secondary mb-0">{{ item.mcode }}</p>
+                          </div>
+                        </div>
+                      </template>
+
+                      <!-- TYPE -->
+                      <template v-slot:item.catalog_name="{ item }">
+                        <p class="text-xs font-weight-bold mb-0">{{ item.catalog_nameTH }}</p>
+                        <p class="text-xs text-secondary mb-0">{{ item.catalog_nameEN }}</p>
+                      </template>
+
+                      <!-- STATUS -->
+                      <template v-slot:item.status="{ item }">
+                        <span v-if="item.status == 'Close'" class="badge badge-font-dark badge-sm bg-gradient-success">
+                          {{ item.status }}</span>
+
+                        <span v-else class="badge badge-sm badge-font-dark bg-gradient-warning">
+                          {{ item.status }}</span>
+                      </template>
+
+                      <!-- LAST UPDATE -->
+                      <template v-slot:item.approve_date="{ item }">
+                        <span v-if="item.approve_date != 0" class="text-secondary text-xs font-weight-bold">
+                          {{ moment.unix(item.approve_date).format('DD/MM/YYYY h:mm') }}</span>
+
+                        <span v-else class="text-secondary text-xs font-weight-bold">
+                          - </span>
+                      </template>
+
+                      <!-- VIEW -->
+                      <template v-slot:item.actions="{ item }">
+                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="#">View</a>
+                      </template>
+                    </v-data-table>
                   </div>
                 </div>
               </div>
@@ -100,7 +105,7 @@
       </main>
 
       <!-- new ticket Modal -->
-      <div class="modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
+      <div class=" modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
         aria-labelledby="newTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -116,7 +121,7 @@
 
               <!-- overlay loading -->
               <div class="text-center">
-                <v-overlay v-if="isLoading">
+                <v-overlay v-if="isLoading" opacity="1">
                   <%- include('../../partials/loading.ejs'); %>
                 </v-overlay>
               </div>
@@ -132,17 +137,6 @@
                     <div class="sub-title-warning">{{ subTextAlert }}</div>
                   </div>
                 </v-alert>
-              </div>
-
-              <div class="text-center">
-                <v-snackbar v-model="snackbar" :timeout="timeout">
-                  {{ text }}
-                  <template v-slot:action="{ attrs }">
-                    <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
-                      Close
-                    </v-btn>
-                  </template>
-                </v-snackbar>
               </div>
 
               <!-- modal content -->
@@ -193,6 +187,18 @@
                     </button>
                   </div>
                 </form>
+
+                <div class="text-center">
+                  <v-snackbar v-model="snackbar" :timeout="timeout">
+                    {{ text }}
+                    <template v-slot:action="{ attrs }">
+                      <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+                        Close
+                      </v-btn>
+                    </template>
+                  </v-snackbar>
+                </div>
+
               </div>
             </div>
           </div>
@@ -224,6 +230,44 @@
         snackbar: false,
         text: '',
         timeout: 2000,
+        ticketList: [],
+        table: {
+          headers: [{
+              text: 'TICKETID',
+              align: 'start',
+              value: 'ticket_id',
+            },
+            {
+              text: 'DATE CREATED',
+              value: 'create_date'
+            },
+            {
+              text: 'INFORMER',
+              value: 'mname'
+            },
+            {
+              text: 'TICKET TYPE',
+              value: 'catalog_name'
+            },
+            {
+              text: 'STATUS',
+              align: 'center',
+              value: 'status'
+            },
+            {
+              text: 'LAST UPDATE',
+              align: 'center',
+              value: 'approve_date'
+            },
+            {
+              align: 'center',
+              value: 'actions'
+            },
+          ],
+
+          items: [],
+          search: '',
+        }
       },
 
       // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
@@ -233,7 +277,10 @@
 
       // computed จะคืนค่าล่าสุดเท่านั้น
       computed: {
-
+        async loadTicket() {
+          await axios.get(`${baseUrl}user/ticket/list`).then(response => this.table.items = response.data.data)
+            .catch(error => console.log(error));
+        },
       },
 
       // methods จะทำใหม่และคือค่านั้นกลับมา
@@ -248,7 +295,7 @@
           this.form.fileUpload = event.target.files[0];
         },
 
-        submitNewTicket() {
+        async submitNewTicket() {
           if (!this.form.selectType || !this.form.inputDetail) {
             this.alert = true;
             this.textAlert = "Please fill out the information completely";
@@ -262,65 +309,66 @@
           // show loading
           this.isLoading = true;
 
-          axios
+          let result = await axios
             .post(`${baseUrl}user/add/new/ticket`, this.form, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
             })
             .then(function (response) {
-              let {
-                status,
-                message
-              } = response.data
-
-              if (status === 200) {
-                this.snackbar = true;
-                this.text = message;
-              }
-
-              if (status === 400) {
-                this.snackbar = true
-                this.text = message;
-              }
+              return response.data;
             })
             .catch(function (error) {
               console.log(error);
             });
+
+          if (result.status === 400 || result.status === 404) {
+            setTimeout(() => {
+              this.isLoading = false;
+              this.snackbar = true;
+              this.text = result.message;
+              return
+            }, 2000)
+          }
+
+          setTimeout(() => {
+            this.isLoading = false;
+            this.snackbar = true;
+            this.text = result.message;
+            setTimeout(() => {
+              // window.location.reload()
+            }, 1500);
+            return
+          }, 2000)
+
         },
       },
 
       beforeCreate() {
-
+        console.log('beforeCreate')
       },
 
-      created() {
-
+      async created() {
+        console.log('created')
+        await this.loadTicket
       },
 
       beforeMount() {
-
+        console.log('beforeMount')
       },
 
       mounted() {
+        console.log('mounted')
         // clear modal when dismiss
         $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal)
       },
 
       beforeUpdate() {
-
+        console.log('beforeUpdate')
       },
 
       updated() {
-
-      },
-
-      beforedestroy() {
-
-      },
-
-      destroyed() {
-
+        console.log('updated')
       },
     });
   </script>

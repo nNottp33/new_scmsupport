@@ -183,3 +183,11 @@ body {
 .v-alert__content {
     margin-left: 20px !important;
 }
+
+.badge-font-dark {
+    color: #000 !important;
+}
+
+.input-group-text {
+    z-index: 1;
+}
