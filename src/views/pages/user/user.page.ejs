@@ -340,14 +340,14 @@
               }, 1000)
             }, 2000)
             return
-          } else {
-            setTimeout(() => {
-              this.isLoading = false;
-              this.snackbar = true;
-              this.text = result.message;
-            }, 2000)
-            return
           }
+
+          setTimeout(() => {
+            this.isLoading = false;
+            this.snackbar = true;
+            this.text = result.message;
+          }, 2000)
+          return
 
         },
       },
