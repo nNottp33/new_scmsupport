@@ -105,12 +105,12 @@
       </main>
 
       <!-- new ticket Modal -->
-      <div class=" modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
+      <div class="modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
         aria-labelledby="newTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="newTicketModalLabel">
+              <h5 class="modal-title">
                 New Ticket
                 <div class="sub-title">แจ้งปัญหา Ticket</div>
               </h5>
@@ -230,8 +230,9 @@
         snackbar: false,
         text: '',
         timeout: 2000,
-        ticketList: [],
+
         table: {
+
           headers: [{
               text: 'TICKETID',
               align: 'start',
@@ -272,13 +273,19 @@
 
       // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
       watch: {
-
+        options: {
+          handler() {
+            this.loadTicket
+          },
+          deep: true,
+        },
       },
 
       // computed จะคืนค่าล่าสุดเท่านั้น
       computed: {
         async loadTicket() {
-          await axios.get(`${baseUrl}user/ticket/list`).then(response => this.table.items = response.data.data)
+          await axios.get(`${baseUrl}user/ticket/list`).then(response => this.table.items = response.data
+              .data)
             .catch(error => console.log(error));
         },
       },
@@ -322,24 +329,25 @@
               console.log(error);
             });
 
-          if (result.status === 400 || result.status === 404) {
+          if (result.status === 200) {
             setTimeout(() => {
               this.isLoading = false;
               this.snackbar = true;
               this.text = result.message;
-              return
+              setTimeout(() => {
+                this.$refs.close.click();
+                window.location.reload();
+              }, 1000)
             }, 2000)
-          }
-
-          setTimeout(() => {
-            this.isLoading = false;
-            this.snackbar = true;
-            this.text = result.message;
-            setTimeout(() => {
-              // window.location.reload()
-            }, 1500);
             return
-          }, 2000)
+          } else {
+            setTimeout(() => {
+              this.isLoading = false;
+              this.snackbar = true;
+              this.text = result.message;
+            }, 2000)
+            return
+          }
 
         },
       },

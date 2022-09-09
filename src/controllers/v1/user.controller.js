@@ -35,7 +35,7 @@ const ThreadList = async (req, res) => {
       .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
       .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
       .orderBy('f_ticket.create_date', 'DESC')
-      .limit(20);
+      .limit(100);
     res.json({
       status: 200,
       message: 'Successfully fetched',
@@ -83,7 +83,6 @@ const NewTicket = async (req, res) => {
               create_date: moment().tz("Asia/Bangkok").unix(),
             })
             .into('f_ticket_detail')
-
 
           logger.info('Inserted ticket successfully');
           return res.json({
