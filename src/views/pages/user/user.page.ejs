@@ -93,7 +93,7 @@
 
                       <!-- VIEW -->
                       <template v-slot:item.actions="{ item }">
-                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="#">View</a>
+                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="/user/support/scm/thread/detail">View</a>
                       </template>
                     </v-data-table>
                   </div>
@@ -273,12 +273,7 @@
 
       // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
       watch: {
-        options: {
-          handler() {
-            this.loadTicket
-          },
-          deep: true,
-        },
+
       },
 
       // computed จะคืนค่าล่าสุดเท่านั้น
@@ -352,31 +347,13 @@
         },
       },
 
-      beforeCreate() {
-        console.log('beforeCreate')
-      },
-
       async created() {
-        console.log('created')
         await this.loadTicket
       },
 
-      beforeMount() {
-        console.log('beforeMount')
-      },
-
       mounted() {
-        console.log('mounted')
         // clear modal when dismiss
         $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal)
-      },
-
-      beforeUpdate() {
-        console.log('beforeUpdate')
-      },
-
-      updated() {
-        console.log('updated')
       },
     });
   </script>

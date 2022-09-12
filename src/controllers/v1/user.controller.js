@@ -52,8 +52,14 @@ const ThreadList = async (req, res) => {
 };
 
 const DetailThread = async (req, res) => {
-  return res.status(httpStatus.OK).render("pages/user/user.page.ejs", {
-    nameuser: "user pass",
+  let { role, member_id, member_name, email } = req.session.sessionsData;
+
+  return res.status(httpStatus.OK).render("pages/user/thread.page.ejs", {
+    role: role,
+    baseUrl: config.baseUrl,
+    memId: member_id,
+    memName: member_name,
+    memEmail: email,
   });
 };
 

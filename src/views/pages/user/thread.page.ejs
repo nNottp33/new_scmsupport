@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../../partials/head.ejs'); %>
+</head>
+
+<body>
+    <!-- navbar -->
+    <%- include('../../partials/navbar.ejs'); %>
+
+    <div v-cloak id="app">
+        <!-- For rendev vuetify  -->
+        <v-app>
+
+            <!-- content -->
+            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content">
+                <div class="container-fluid py-2">
+                    <div class="row">
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+        </v-app>
+    </div>
+
+    <!-- new ticket modal end -->
+    <%- include('../../partials/footer.ejs'); %>
+
+    <script type="text/javascript">
+        const baseUrl = "<%- baseUrl %>";
+
+        let app = new Vue({
+            el: "#app",
+            vuetify: new Vuetify(), // called vuetify
+            data: {
+
+            },
+
+            watch: {
+
+            },
+
+
+            computed: {
+
+            },
+
+
+            methods: {
+                clearModal() {
+                    // this.form.selectType = ''
+                    // this.form.inputDetail = ''
+                    // this.$refs.file.value = null;
+                },
+            },
+
+            async created() {
+
+            },
+
+            mounted() {
+                // clear modal when dismiss
+                // $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal)
+            },
+        });
+    </script>
+</body>
+
+</html>
