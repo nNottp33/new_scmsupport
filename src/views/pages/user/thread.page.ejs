@@ -13,17 +13,117 @@
         <!-- For rendev vuetify  -->
         <v-app>
 
-            <!-- content -->
-            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content">
-                <div class="container-fluid py-2">
-                    <div class="row">
-                        <div class="col-12">
+            <div style="width: 100%; max-width: 800px;" class="mt-0 m-auto justify-content-center">
 
+
+                <!-- content -->
+                <main class="main-content  max-height-vh-100 h-100 border-radius-lg content">
+                    <!-- back button -->
+                    <div style="box-shadow: rgb(0 0 0 / 5%) 0px 2px 60px 0px; border-radius: 20px;"
+                        class="container blur z-index-sticky">
+                        <div class="row">
+                            <div class="col-1 col-md-1">
+                                <a href="javascript:history.back()">
+                                    <v-icon>
+                                        mdi-arrow-left
+                                    </v-icon>
+                                </a>
+                            </div>
+                            <div class="col-11 col-md-11">
+                                <p class="text-sm font-weight-bold mb-0">หัวข้อไทย </p>
+                                <p class="text-sm text-secondary mb-0">หัวข้ออิ้ง</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </main>
 
+                    <div class="container py-2">
+
+                        <div class="card card-blog card-plain">
+                            <div class="position-relative">
+                                <a class="d-block blur-shadow-image">
+                                    <img src="https://images.unsplash.com/photo-1593642634402-b0eb5e2eebc9?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1920&amp;q=80"
+                                        alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+                                </a>
+                            </div>
+                            <div class="card-body px-0 pt-4">
+                                <div class="px-3">
+                                    <p
+                                        class="text-gradient text-primary text-gradient font-weight-bold text-sm text-uppercase">
+                                        Enterprise</p>
+                                    <a href="javascript:;">
+                                        <h4>
+                                            Siri brings hands-free TV to more devices
+                                        </h4>
+                                    </a>
+                                    <p>
+                                        Siri's latest trick is offering a hands-free TV viewing experience, that will
+                                        allow
+                                        consumers to turn on or
+                                        off their television, change inputs, fast forward, rewind and more, without
+                                        having
+                                        to first invoke a
+                                        specific skill, or even
+                                        press a button on their remote.
+                                    </p>
+                                </div>
+
+                                <div class="container px-0 mt-5 mb-5">
+                                    <div class="row height d-flex justify-content-center align-items-center">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="p-3">
+                                                    <h6>Comments</h6>
+                                                    <div class="sub-title">
+                                                        ความคิดเห็น
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex flex-row align-items-center p-3 form-color">
+                                                    <div class="row">
+                                                        <div class="col-md-2 col-2 pr-1">
+                                                            <img src="https://i.imgur.com/zQZSWrt.jpg" width="40"
+                                                                class="rounded-circle">
+                                                        </div>
+
+                                                        <div class="col-md-10 col-10 pl-0">
+                                                            <input type="text" class="form-control comment"
+                                                                placeholder="Comment...">
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-2">
+                                                    <div class="d-flex flex-row p-3"> <img
+                                                            src="https://i.imgur.com/zQZSWrt.jpg" width="40" height="40"
+                                                            class="rounded-circle mr-3">
+                                                        <div class="w-100">
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center">
+                                                                <div class="d-flex flex-row align-items-center">
+                                                                    <span class="mr-2">Brian selter</span> <small
+                                                                        class="c-badge">Top
+                                                                        Comment</small> </div> <small>12h ago</small>
+                                                            </div>
+                                                            <p class="text-justify comment-text mb-0">Lorem ipsum
+                                                                dolor sit amet,
+                                                                consectetur adipiscing elit, sed do eiusmod tempor
+                                                                incididunt ut
+                                                                labore et dolore magna aliqua. Ut enim ad minim
+                                                                veniam</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </v-app>
     </div>
 
@@ -37,7 +137,9 @@
             el: "#app",
             vuetify: new Vuetify(), // called vuetify
             data: {
-
+                events: [],
+                input: null,
+                nonce: 0,
             },
 
             watch: {
@@ -46,15 +148,24 @@
 
 
             computed: {
-
+                timeline() {
+                    return this.events.slice().reverse()
+                },
             },
 
 
             methods: {
-                clearModal() {
-                    // this.form.selectType = ''
-                    // this.form.inputDetail = ''
-                    // this.$refs.file.value = null;
+                comment() {
+                    const time = (new Date()).toTimeString()
+                    this.events.push({
+                        id: this.nonce++,
+                        text: this.input,
+                        time: time.replace(/:\d{2}\sGMT-\d{4}\s\((.*)\)/, (match, contents, offset) => {
+                            return ` ${contents.split(' ').map(v => v.charAt(0)).join('')}`
+                        }),
+                    })
+
+                    this.input = null
                 },
             },
 
@@ -63,8 +174,7 @@
             },
 
             mounted() {
-                // clear modal when dismiss
-                // $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal)
+
             },
         });
     </script>

@@ -34,7 +34,6 @@
                   </div>
                 </div>
                 <div class="card-body px-3 pt-0 pb-2">
-
                   <!-- search -->
                   <div class="w-25 ms-md-auto pe-md-3 d-flex align-items-center mb-3">
                     <div class="input-group">
@@ -93,7 +92,10 @@
 
                       <!-- VIEW -->
                       <template v-slot:item.actions="{ item }">
-                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="/user/support/scm/thread/detail">View</a>
+                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto"
+                          :href="`/user/support/scm/thread/detail/${item.ticket_id}`">
+                          VIEW
+                        </a>
                       </template>
                     </v-data-table>
                   </div>

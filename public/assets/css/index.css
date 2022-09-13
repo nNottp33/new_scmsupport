@@ -191,3 +191,43 @@ body {
 .input-group-text {
     z-index: 1;
 }
+
+
+textarea {
+    width: 100% !important;
+    border: 1px #b7b7b7 solid;
+}
+
+.comment {
+    border-radius: 20px;
+    border-top-right-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+}
+
+
+.file-input__input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-input__label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    font-size: 14px;
+    padding: 10px 12px;
+
+}
+
+.file-input__label svg {
+    height: 16px;
+    margin-right: 4px;
+}

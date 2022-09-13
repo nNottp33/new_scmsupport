@@ -53,6 +53,8 @@ const ThreadList = async (req, res) => {
 
 const DetailThread = async (req, res) => {
   let { role, member_id, member_name, email } = req.session.sessionsData;
+  let { ticketid } = req.params
+
 
   return res.status(httpStatus.OK).render("pages/user/thread.page.ejs", {
     role: role,
@@ -113,9 +115,22 @@ const NewTicket = async (req, res) => {
   }
 }
 
+
+const HistoryList = async (req, res) => {
+  let { email, member_id, member_name, role } = req.session.sessionsData;
+
+  return res.status(200).render("pages/user/history.page.ejs", {
+    role: role,
+    baseUrl: config.baseUrl,
+    memId: member_id,
+    memName: member_name,
+  })
+};
+
 module.exports = {
   UserThread,
   ThreadList,
   DetailThread,
   NewTicket,
+  HistoryList,
 };
