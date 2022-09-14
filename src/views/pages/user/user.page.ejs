@@ -57,7 +57,9 @@
                       <template v-slot:item.mname="{ item }">
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="/assets/images/team-3.jpg" class="avatar avatar-sm me-3" alt="user1">
+                            <v-avatar class="me-3 white--text" :color="profileColor" rounded size="30">
+                              {{ item.mname.charAt(0) }}
+                            </v-avatar>
                           </div>
                           <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
@@ -174,7 +176,7 @@
                     <label>Attach file</label>
                     <div class="sub-title">แนบไฟล์</div>
                     <div class="mt-1 mb-3">
-                      <input name="fileUpload" @change="uploadFile($event)" ref="file" type="file"
+                      <input accept="image/*" name="fileUpload" @change="uploadFile($event)" ref="file" type="file"
                         class="form-control" />
                     </div>
                   </div>
@@ -215,6 +217,7 @@
 
   <script type="text/javascript">
     const baseUrl = "<%- baseUrl %>";
+    const role = "<%- role %>";
 
     let app = new Vue({
       el: "#app",
@@ -232,7 +235,7 @@
         snackbar: false,
         text: '',
         timeout: 2000,
-
+        profileColor: role == 'user' ? 'orange' : 'purple',
         table: {
 
           headers: [{

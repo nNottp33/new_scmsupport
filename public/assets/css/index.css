@@ -196,6 +196,9 @@ body {
 textarea {
     width: 100% !important;
     border: 1px #b7b7b7 solid;
+    height: auto;
+    line-height: 16px;
+    resize: none !important;
 }
 
 .comment {
@@ -223,11 +226,22 @@ textarea {
     font-weight: 600;
     color: #000;
     font-size: 14px;
-    padding: 10px 12px;
-
+    /* padding: 10px 12px; */
 }
 
 .file-input__label svg {
     height: 16px;
     margin-right: 4px;
+}
+
+.avatar {
+    border-radius: 6px !important;
+}
+
+.avatar-user {
+    background: #ff9800 !important;
+}
+
+.avatar-admin {
+    background: #9c27b0 !important;
 }
