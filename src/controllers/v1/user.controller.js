@@ -4,6 +4,7 @@ const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
 const moment = require("moment-timezone");
+const chalk = require("chalk");
 
 const UserThread = async (req, res) => {
   let { email, member_id, member_name, role } = req.session.sessionsData;
@@ -21,7 +22,7 @@ const UserThread = async (req, res) => {
       category: resultCategory,
     });
   } catch (err) {
-    logger.error(err);
+    logger.error(chalk.red(err));
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 };
@@ -44,7 +45,7 @@ const ThreadList = async (req, res) => {
       data: resultTicket,
     })
   } catch (err) {
-    logger.error(err);
+    logger.error(chalk.red(err));
     return res.json({
       status: 400,
       message: `Can't fetched Data`
@@ -67,7 +68,7 @@ const DetailThread = async (req, res) => {
       .where('f_ticket_detail.ticket_id', '=', ticketid)
       .andWhere('f_ticket.mcode', '=', member_id);
   } catch (err) {
-    logger.error(err);
+    logger.error(chalk.red(err));
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 
@@ -115,7 +116,7 @@ const NewTicket = async (req, res) => {
           })
 
         } catch (e) {
-          logger.error(e)
+          logger.error(chalk.red(e))
           return res.json({
             status: 400,
             message: `Can't inserted Data`
@@ -123,7 +124,7 @@ const NewTicket = async (req, res) => {
         }
       });
   } catch (error) {
-    logger.error(error)
+    logger.error(chalk.red(error))
     return res.json({
       status: 400,
       message: `Can't inserted Data`
