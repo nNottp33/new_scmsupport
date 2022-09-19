@@ -72,3 +72,14 @@ body {
   min-width: initial;
   padding: 0.5rem;
 }
+
+.search__bar {
+  max-width: 350px;
+  width: 100%;
+}
+
+.btn-search__history {
+  max-width: 300px;
+  width: 100%;
+  font-size: .8em;
+}

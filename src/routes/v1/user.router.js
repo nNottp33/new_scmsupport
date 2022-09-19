@@ -17,7 +17,8 @@ const upload = multer({ storage: storage })
 userRouter.get("/support/scm", userController.UserThread);
 userRouter.get("/support/scm/thread/detail/:ticketid", userController.DetailThread);
 userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
-userRouter.get("/ticket/list", userController.ThreadList);
+userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.get("/ticket/history", userController.HistoryList);
+userRouter.post("/ticket/history/search", userController.SearchHistory);
 
 module.exports = userRouter;

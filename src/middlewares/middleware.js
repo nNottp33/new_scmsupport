@@ -2,6 +2,7 @@ const { GetMember } = require("../services/service");
 const httpStatus = require("http-status");
 const logger = require("../configs/logger");
 const config = require("../configs/config");
+const chalk = require("chalk");
 
 const CheckUser = async (req, res, next) => {
   let { mem_id } = req.query;

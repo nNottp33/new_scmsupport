@@ -29,7 +29,6 @@
                             <div class="col-11 col-md-11">
                                 <p class="text-sm font-weight-bold mb-0"> <%- forum[0].catalog_nameTH %> </p>
                                 <p class="text-sm text-secondary mb-0"> <%- forum[0].catalog_nameEN %> </p>
-
                             </div>
                         </div>
                     </div>
@@ -69,6 +68,7 @@
                                                     </div>
                                                 </div>
 
+                                                <% if (forum[0].status_id === 1 || forum[0].status_id === 2) { %>
                                                 <div class="mb-5">
                                                     <div class="d-flex flex-row p-3 py-1 m-auto justify-content-center">
                                                         <div class="w-100">
@@ -77,8 +77,8 @@
                                                                     <div
                                                                         class="file-input flex-column py-2 px-2 m-auto justify-content-center">
                                                                         <input @change="onFileChange" accept="image/*"
-                                                                            type="file" name="file-input"
-                                                                            id="file-input" ref="file-input"
+                                                                            type="file" name="file-comment"
+                                                                            id="file-input" ref="file-comment"
                                                                             class="file-input__input" />
                                                                         <label class="file-input__label"
                                                                             for="file-input">
@@ -113,6 +113,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <% } %>
 
                                                 <div v-if="itemComment" class="mt-2 mb-5">
                                                     <div v-for="item in itemComment" class="d-flex flex-row p-3">
@@ -139,7 +140,6 @@
                                                                 {{ item.newComment }}
                                                             </p>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>

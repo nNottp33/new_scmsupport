@@ -18,7 +18,7 @@ const io = require("socket.io")(server);
 // custom modules
 const { port } = require("./src/configs/config");
 const routes = require("./src/routes/v1/route");
-const { CheckUser, CheckErr } = require("./src/middlewares/middleware");
+const { CheckUser } = require("./src/middlewares/middleware");
 const randomString = require("./src/services/string.service");
 const logger = require("./src/configs/logger");
 // const socketCtrl = require("./src/controllers/v1/socket.controller");
