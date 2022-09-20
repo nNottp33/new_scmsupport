@@ -257,3 +257,18 @@ textarea {
     border-radius: 20px;
     max-width: 380px;
 }
+
+.dropdown-menu {
+    margin-top: 30px !important;
+}
+
+.dropdown-menu {
+    position: absolute;
+    left: 0 !important;
+}
+
+@media (min-width: 940px) {
+    .dropdown-menu {
+        left: -240px !important;
+    }
+}

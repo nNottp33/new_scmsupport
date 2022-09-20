@@ -4033,7 +4033,7 @@ fieldset:disabled .btn {
 .dropstart,
 .dropup-center,
 .dropdown-center {
-  position: relative;
+  position: absolute;
 }
 
 .dropdown-toggle {
@@ -21132,7 +21132,7 @@ fieldset:disabled .btn {
 
   .dropdown .dropdown-menu:before {
     font-family: "FontAwesome";
-    content: "\f0d8";
+    content: none;
     position: absolute;
     top: 0;
     left: 28px;
@@ -21168,7 +21168,7 @@ fieldset:disabled .btn {
 
   .navbar-toggler+.navbar-collapse .dropdown:not(.nav-item) .dropdown-menu:before {
     font-family: "FontAwesome";
-    content: "\f0d8";
+    content: none;
     position: absolute;
     top: 0;
     left: 28px;
@@ -21216,7 +21216,8 @@ fieldset:disabled .btn {
 
   :not(.navbar) .dropdown .dropdown-menu:before {
     font-family: "FontAwesome";
-    content: "\f0d8";
+    /* content:none; */
+    content: none;
     position: absolute;
     top: 0;
     left: 28px;
@@ -21284,7 +21285,7 @@ fieldset:disabled .btn {
 }
 
 .dropdown .dropdown-menu.dropdown-menu-end {
-  right: 0 !important;
+  /* right: 0 !important; */
   left: auto !important;
 }
 

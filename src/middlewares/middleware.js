@@ -12,6 +12,7 @@ const CheckUser = async (req, res, next) => {
     return next();
   }
 
+
   // check params query user
   if (!mem_id) {
     if (config.node_env !== 'development') return res.status(httpStatus.NOT_FOUND).redirect('https://www.successmore1.com/member/index.php?sessiontab=6')

@@ -82,6 +82,12 @@ const DetailThread = async (req, res) => {
 
   } catch (err) {
     logger.error(chalk.red(err));
+
+    // check error message ONLY_FULL_GROUP_BY?
+    if (err.code === 'ER_WRONG_FIELD_WITH_GROUP') {
+      await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
+    }
+
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 };
@@ -163,6 +169,7 @@ const SearchHistory = async (req, res) => {
       .andWhere('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
       .andWhere('f_ticket.create_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
       .orderBy('f_ticket.create_date', 'DESC');
+
 
     return res.json({
       status: 200,

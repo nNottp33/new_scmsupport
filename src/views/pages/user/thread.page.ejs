@@ -114,15 +114,15 @@
                                                     </div>
                                                 </div>
                                                 <% } %>
-
-                                                <div v-if="itemComment" class="mt-2 mb-5">
+                                    
+                                                <div v-if="itemComment[0].mid" class="mt-2 mb-5">
                                                     <div v-for="item in itemComment" class="d-flex flex-row p-3">
                                                         <!-- avatars -->
                                                         <v-avatar class="mr-3" rounded
-                                                            :color="item.userRole == 'user' ? 'orange' : 'purple'"
+                                                            :color="item.role == 'user' ? 'orange' : 'purple'"
                                                             size="40">
                                                             <span class="white--text text-h5">
-                                                                {{ item.userComment.charAt(0) }}
+                                                                {{ item.u_name.charAt(0) }}
                                                             </span>
                                                         </v-avatar>
 
@@ -131,13 +131,13 @@
                                                                 class="d-flex justify-content-between align-items-center">
                                                                 <div class="d-flex flex-row align-items-center">
                                                                     <span class="mr-2">
-                                                                        {{ item.userComment }}
+                                                                        {{ item.u_name }}
                                                                     </span>
                                                                 </div>
                                                                 <small>12hago</small>
                                                             </div>
                                                             <p class="comment-text mb-0 ">
-                                                                {{ item.newComment }}
+                                                                {{ item.txt_msg }}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -161,6 +161,8 @@
         const baseUrl = "<%- baseUrl %>";
         const role = "<%- role %>";
         const nameUser = "<%- memName %>";
+        const uId = "<%- memId %>";
+        const forum = JSON.parse('<%-JSON.stringify(forum[0])%>');
 
         let app = new Vue({
             el: "#app",
@@ -171,17 +173,7 @@
                 isDisabled: true,
                 isLoading: false,
                 imageUrl: null,
-                itemComment: [{
-                        newComment: "sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf",
-                        userComment: "USERTEST",
-                        userRole: 'user',
-                    },
-                    {
-                        newComment: "dfsdfsdfdsfsdfsdfsdfsdfsfsdfsdf",
-                        userComment: "ADMINTEST",
-                        userRole: 'admin',
-                    }
-                ],
+                itemComment: forum.comment.sort((a, b) => b.mid - a.mid ), // comment sort desc
             },
 
             watch: {
@@ -240,16 +232,18 @@
                 },
 
                 onComment() {
-
                     let commentData = {
-                        newComment: this.comment,
-                        userComment: nameUser,
+                        role: role,
+                        u_id: uId,
+                        u_name: nameUser,
+                        txt_msg: this.comment,
+                        ticketId: forum.ticket_id,
                     }
 
                     this.socket.emit('comment-ticket', commentData);
                     // when send comment reset input comment
-                    this.itemComment.unshift(commentData)
                     this.comment = null;
+                    
                 },
             },
 
@@ -257,14 +251,9 @@
                 // connect to the server socket.io
                 this.socket = io();
 
+                // get reply from server socket
                 this.socket.on('comment-ticket', (msg) => {
-                    let {
-                        message,
-                        user
-                    } = msg;
-
-                    this.newComment = message;
-                    this.userComment = user;
+                    this.itemComment.unshift(msg)
                 })
             },
 
