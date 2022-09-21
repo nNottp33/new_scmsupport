@@ -185,6 +185,43 @@ const SearchHistory = async (req, res) => {
   }
 }
 
+
+const AddComment = async (req, res) => {
+  let { u_id, u_name, txt_msg, ticketId } = req.body;
+  let filename = req.file ? req.file.filename : null;
+
+  console.log(req.file);
+
+  let commentServer = {
+    type: 1,
+    u_id: u_id,
+    u_name: u_name,
+    txt_msg: txt_msg,
+    date_mes: moment.tz('Asia/Bangkok').unix(),
+    ticket_id: ticketId,
+    // attach_file: attach_file ? attach_file : null,
+  }
+
+  try {
+    await conKnex.insert(commentServer)
+      .into('t_comment')
+      .then(async function (mid) {
+        commentServer.mid = mid[0];
+
+        return res.status(httpStatus.OK).send({
+          body: commentServer
+        });
+
+      });
+  } catch (e) {
+    logger.error(chalk.bold.red(e));
+
+    return res.status(httpStatus.NOT_FOUND).send({
+      message: "Can't comment"
+    })
+  }
+}
+
 module.exports = {
   UserThread,
   ThreadList,
@@ -192,4 +229,6 @@ module.exports = {
   NewTicket,
   HistoryList,
   SearchHistory,
+  AddComment,
 };
+

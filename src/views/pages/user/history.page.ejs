@@ -198,7 +198,8 @@
                             {{
                               moment
                                 .unix(item.create_date)
-                                .format("DD/MM/YYYY h:mm")
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
                             }}</span
                           >
                         </template>
@@ -263,7 +264,8 @@
                             {{
                               moment
                                 .unix(item.approve_date)
-                                .format("DD/MM/YYYY h:mm")
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
                             }}</span
                           >
 

@@ -9,6 +9,7 @@ const sessions = require("express-session");
 const httpStatus = require("http-status");
 const bodyParser = require("body-parser");
 const moment = require("moment-timezone");
+const fs = require("fs");
 
 // create http server instance
 const server = require('http').Server(app);
@@ -22,9 +23,7 @@ const routes = require("./src/routes/v1/route");
 const { CheckUser } = require("./src/middlewares/middleware");
 const randomString = require("./src/services/string.service");
 const logger = require("./src/configs/logger");
-const socketCtrl = require("./src/controllers/v1/socket.controller");
 const conKnex = require("./src/configs/db");
-
 
 // enable cors
 app.use(cors());
@@ -66,42 +65,6 @@ app.use(cookieParser());
 // v1 api routes
 app.use("/", routes);
 
-// connection to socket io
-io.on('connection', (socket) => {
-  // logger when have user connection
-  logger.info(chalk.bold.green('Connecting to socket!'));
-
-  // get (emit) events name comment-ticket from client
-  socket.on('comment-ticket', async (msg) => {
-
-    let { role, u_id, u_name, txt_msg, ticketId } = msg;
-
-    let commentServer = {
-      type: 1,
-      u_id: u_id,
-      u_name: u_name,
-      txt_msg: txt_msg,
-      date_mes: moment.tz('Asia/Bangkok').unix(),
-      ticket_id: ticketId,
-      attach_file: null
-    }
-
-    try {
-      await conKnex.insert(commentServer)
-        .into('t_comment')
-        .then(async function (mid) {
-          commentServer.mid = mid[0];
-          commentServer.role = role;
-
-          // reply to client
-          io.emit('comment-ticket', commentServer);
-        });
-    } catch (e) {
-      logger.error(chalk.bold.red(e));
-    }
-  });
-})
-
 app.use((req, res, next) => {
   return res.status(httpStatus.NOT_FOUND).render("pages/error");
 });
@@ -111,3 +74,17 @@ server.listen(port || 3033, () =>
     port ? port : 3033,
   )}`)
 );
+
+// connection to socket io
+io.on('connection', (socket) => {
+  // logger when have user connection
+  logger.info(chalk.bold.green('Connecting to socket!'));
+
+  console.log(socket);
+  // logger.info(chalk.bold.magenta(`ROOM: ${socket.id}`));
+
+  // get (emit) events name comment-ticket from client
+  socket.on('comment-ticket', async (msg) => {
+    io.to(socket.id).emit('comment-ticket', msg)
+  });
+})

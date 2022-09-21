@@ -20,5 +20,6 @@ userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.N
 userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.get("/ticket/history", userController.HistoryList);
 userRouter.post("/ticket/history/search", userController.SearchHistory);
+userRouter.post("/add/comment", upload.single('filecomment'), userController.AddComment);
 
 module.exports = userRouter;
