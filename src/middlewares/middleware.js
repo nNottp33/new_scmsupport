@@ -25,7 +25,7 @@ const CheckUser = async (req, res, next) => {
 
   // if user not found
   if (!resultMember.status) {
-    logger.error(chalk.red(resultMember.error.message));
+    logger.error(chalk.red(resultMember.error));
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 

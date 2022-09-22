@@ -9,13 +9,9 @@ const sessions = require("express-session");
 const httpStatus = require("http-status");
 const bodyParser = require("body-parser");
 const moment = require("moment-timezone");
-const fs = require("fs");
 
 // create http server instance
 const server = require('http').Server(app);
-
-// create socket io server instance
-const io = require("socket.io")(server);
 
 // custom modules
 const { port } = require("./src/configs/config");
@@ -24,6 +20,10 @@ const { CheckUser } = require("./src/middlewares/middleware");
 const randomString = require("./src/services/string.service");
 const logger = require("./src/configs/logger");
 const conKnex = require("./src/configs/db");
+const socketCtrl = require("./src/controllers/v1/socket.controller");
+
+// create socket io server instance
+const io = require("socket.io")(server);
 
 // enable cors
 app.use(cors());
@@ -69,22 +69,44 @@ app.use((req, res, next) => {
   return res.status(httpStatus.NOT_FOUND).render("pages/error");
 });
 
+// server running
 server.listen(port || 3033, () =>
   logger.info(`${chalk.magenta("server is running on port")} ${chalk.blue.bold(
     port ? port : 3033,
   )}`)
 );
 
-// connection to socket io
-io.on('connection', (socket) => {
+
+// connection to socket has namespace /thread
+io.of('/thread').on('connection', (socket) => {
   // logger when have user connection
-  logger.info(chalk.bold.green('Connecting to socket!'));
+  logger.info(chalk.bold.green('Connected to socket!'));
 
-  console.log(socket);
-  // logger.info(chalk.bold.magenta(`ROOM: ${socket.id}`));
+  // join group post
+  socket.on("join-post", ({ name, room }, callBack) => {
+    // when error return error
+    if (error) return callBack(error);
 
-  // get (emit) events name comment-ticket from client
-  socket.on('comment-ticket', async (msg) => {
-    io.to(socket.id).emit('comment-ticket', msg)
+    // set data to group post
+    const { post, error } = socketCtrl.AddUserToRoom({ id: socket.id, name, room });
+
+    // set join group post
+    socket.join(post.room);
+    logger.info(chalk.bold.magenta(`${post.name} ${chalk.blue('Joined')} post ${post.room}`));
+
+    // get event when user comment on post
+    socket.on('comment', (msg) => {
+      io.of('/thread').to(post.room).emit('comment', msg)
+    })
+
+    // when have no error return null
+    callBack(null);
+  });
+
+  // when users leave post
+  socket.on("disconnect", () => {
+    // remove user data from group post
+    const user = socketCtrl.RemoveFromRoom(socket.id);
+    logger.info(chalk.bold.blackBright(`Leave post`));
   });
 })

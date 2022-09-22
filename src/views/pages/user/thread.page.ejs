@@ -152,7 +152,7 @@
                           </div>
                           <% } %>
 
-                          <div v-if="itemComment[0].mid" class="mt-2 mb-5">
+                          <div v-if="itemComment" class="mt-2 mb-5">
                             <div
                               v-for="item in itemComment"
                               class="d-flex flex-row p-3"
@@ -261,7 +261,10 @@
           isLoading: false,
           imageUrl: null,
           imageFullSrc: null,
-          itemComment: forum.comment.sort((a, b) => a.mid - b.mid),
+          itemComment:
+            forum.comment[0].mid == null
+              ? []
+              : forum.comment.sort((a, b) => a.mid - b.mid),
           fileImage: null,
           snackbar: false,
           text: null,
@@ -366,23 +369,29 @@
               date_mes: date_mes,
             });
 
-            this.socket.to(this.socket.id).emit("comment-ticket", commentData);
+            this.socket.emit(`comment`, commentData);
             // when send comment reset input comment
             this.comment = null;
           },
         },
 
         async created() {
-          // connect to the server socket.io
-          this.socket = io();
+          // create namespace and connect to the server io
+          this.socket = io("/thread");
 
-          this.socket.join(this.socket.id);
+          let room = forum.ticket_id;
+          let name = nameUser;
+
+          this.socket.emit("join-post", { name, room }, (error) => {
+            if (error) {
+              this.snackbar = true;
+              this.text = "Can't join post";
+            }
+          });
 
           // get reply from server socket
-          this.socket.on("comment-ticket", (msg) => {
+          this.socket.on(`comment`, (msg) => {
             this.itemComment.push(msg);
-
-            console.log(this.itemComment);
           });
         },
 

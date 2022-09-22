@@ -1,10 +1,10 @@
 
 const httpStatus = require("http-status");
+const moment = require("moment-timezone");
+const chalk = require("chalk");
 const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
-const moment = require("moment-timezone");
-const chalk = require("chalk");
 
 const UserThread = async (req, res) => {
   let { email, member_id, member_name, role } = req.session.sessionsData;
@@ -61,7 +61,7 @@ const DetailThread = async (req, res) => {
 
   try {
 
-    let resultTicketDetails = await conKnex.select('d_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'f_ticket_detail.*', 'f_ticket.status_id', 'f_ticket.create_date',
+    let resultTicketDetails = await conKnex.select('f_ticket.mname', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'f_ticket_detail.*', 'f_ticket.status_id', 'f_ticket.create_date',
       conKnex.raw('JSON_ARRAYAGG( JSON_OBJECT( "mid", t_comment.mid, "txt_msg", t_comment.txt_msg, "date_mes", t_comment.date_mes, "ticket_id", t_comment.ticket_id, "u_id", t_comment.u_id, "attach_file", t_comment.attach_file, "type", t_comment.type, "u_name", t_comment.u_name, "role", CASE WHEN f_ticket.mname = t_comment.u_name THEN "user" ELSE "admin" END)) as comment'))
       .from('f_ticket_detail')
       .innerJoin('f_ticket', 'f_ticket.ticket_id', 'f_ticket_detail.ticket_id')
@@ -189,8 +189,6 @@ const SearchHistory = async (req, res) => {
 const AddComment = async (req, res) => {
   let { u_id, u_name, txt_msg, ticketId } = req.body;
   let filename = req.file ? req.file.filename : null;
-
-  console.log(req.file);
 
   let commentServer = {
     type: 1,
