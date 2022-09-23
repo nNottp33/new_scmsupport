@@ -96,9 +96,9 @@
                                         @change="onFileChange($event)"
                                         accept="image/*"
                                         type="file"
-                                        name="filecomment"
+                                        name="fileComment"
                                         id="file-input"
-                                        ref="filecomment"
+                                        ref="fileinput"
                                         class="file-input__input"
                                       />
 
@@ -265,7 +265,7 @@
             forum.comment[0].mid == null
               ? []
               : forum.comment.sort((a, b) => a.mid - b.mid),
-          fileImage: null,
+          fileComment: null,
           snackbar: false,
           text: null,
         },
@@ -330,8 +330,8 @@
           },
 
           onFileChange(e) {
-            this.fileImage = e.target.files[0];
-            this.imageUrl = URL.createObjectURL(this.fileImage);
+            this.fileComment = e.target.files[0];
+            this.imageUrl = URL.createObjectURL(this.fileComment);
           },
 
           async onComment() {
@@ -340,6 +340,7 @@
               u_name: nameUser,
               txt_msg: this.comment,
               ticketId: forum.ticket_id,
+              attach_file: this.fileComment,
             };
 
             let result = await axios
@@ -361,15 +362,13 @@
               return;
             }
 
-            let { mid, date_mes } = result.data.body;
+            this.socket.emit(
+              `comment`,
+              Object.assign(result.data.body, {
+                role: role,
+              }),
+            );
 
-            Object.assign(commentData, {
-              mid: mid,
-              role: role,
-              date_mes: date_mes,
-            });
-
-            this.socket.emit(`comment`, commentData);
             // when send comment reset input comment
             this.comment = null;
           },
@@ -391,6 +390,8 @@
 
           // get reply from server socket
           this.socket.on(`comment`, (msg) => {
+            console.log(msg);
+
             this.itemComment.push(msg);
           });
         },

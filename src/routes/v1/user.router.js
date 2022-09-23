@@ -12,14 +12,18 @@ const storage = multer.diskStorage({
         cb(null, fileName)
     }
 })
+
 const upload = multer({ storage: storage })
 
+// methods get
 userRouter.get("/support/scm", userController.UserThread);
 userRouter.get("/support/scm/thread/detail/:ticketid", userController.DetailThread);
-userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
-userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.get("/ticket/history", userController.HistoryList);
+
+// methods post
+userRouter.post("/ticket/list", userController.ThreadList);
+userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
 userRouter.post("/ticket/history/search", userController.SearchHistory);
-userRouter.post("/add/comment", upload.single('filecomment'), userController.AddComment);
+userRouter.post("/add/comment", upload.any('fileComment'), userController.AddComment);
 
 module.exports = userRouter;

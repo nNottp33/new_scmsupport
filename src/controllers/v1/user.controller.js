@@ -81,13 +81,8 @@ const DetailThread = async (req, res) => {
     });
 
   } catch (err) {
-    logger.error(chalk.red(err));
-
-    // check error message ONLY_FULL_GROUP_BY?
-    if (err.code === 'ER_WRONG_FIELD_WITH_GROUP') {
-      await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
-    }
-
+    logger.error(chalk.red(err.code));
+    await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
 };
@@ -188,7 +183,7 @@ const SearchHistory = async (req, res) => {
 
 const AddComment = async (req, res) => {
   let { u_id, u_name, txt_msg, ticketId } = req.body;
-  let filename = req.file ? req.file.filename : null;
+  let filename = req.files ? req.files[0].filename : null;
 
   let commentServer = {
     type: 1,
@@ -197,7 +192,7 @@ const AddComment = async (req, res) => {
     txt_msg: txt_msg,
     date_mes: moment.tz('Asia/Bangkok').unix(),
     ticket_id: ticketId,
-    // attach_file: attach_file ? attach_file : null,
+    attach_file: filename,
   }
 
   try {

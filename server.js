@@ -84,11 +84,11 @@ io.of('/thread').on('connection', (socket) => {
 
   // join group post
   socket.on("join-post", ({ name, room }, callBack) => {
+    // set data to group post
+    const { post, error } = socketCtrl.AddUserToRoom({ id: socket.id, name, room });
     // when error return error
     if (error) return callBack(error);
 
-    // set data to group post
-    const { post, error } = socketCtrl.AddUserToRoom({ id: socket.id, name, room });
 
     // set join group post
     socket.join(post.room);
