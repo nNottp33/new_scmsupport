@@ -183,7 +183,7 @@ const SearchHistory = async (req, res) => {
 
 const AddComment = async (req, res) => {
   let { u_id, u_name, txt_msg, ticketId } = req.body;
-  let filename = req.files ? req.files[0].filename : null;
+  let filename = req.files.length > 0 ? req.files[0].filename : null;
 
   let commentServer = {
     type: 1,
@@ -215,6 +215,29 @@ const AddComment = async (req, res) => {
   }
 }
 
+
+const DeleteComment = async (req, res) => {
+  let { comment } = req.body;
+
+  try {
+    await conKnex('t_comment')
+      .where('mid', comment)
+      .del()
+
+    return res.status(httpStatus.OK).send({
+      message: 'Comment deleted!'
+    })
+
+  } catch (e) {
+    logger.error(chalk.bold.red(e));
+
+    return res.status(httpStatus.NOT_FOUND).send({
+      message: "Can't deleted"
+    })
+  }
+}
+
+
 module.exports = {
   UserThread,
   ThreadList,
@@ -223,5 +246,6 @@ module.exports = {
   HistoryList,
   SearchHistory,
   AddComment,
+  DeleteComment
 };
 

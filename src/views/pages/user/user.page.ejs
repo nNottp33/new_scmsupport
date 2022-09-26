@@ -1,467 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../../partials/head.ejs'); %>
-  </head>
 
-  <body>
-    <!-- navbar -->
-    <%- include('../../partials/navbar.ejs'); %>
+<head>
+  <%- include('../../partials/head.ejs'); %>
+</head>
 
-    <div v-cloak id="app">
-      <!-- For rendev vuetify  -->
-      <v-app>
-        <!-- content -->
-        <main
-          class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content"
-        >
-          <div class="container-fluid py-2">
-            <div class="row">
-              <div class="col-12">
-                <div class="card mb-4">
-                  <div class="card-header pb-3">
-                    <div class="row">
-                      <div class="col-6 col-md-3">
-                        <h6>Ticket list</h6>
-                        <div class="sub-title">รายการ Ticket</div>
-                      </div>
-                      <div class="col-6 col-md-9 content-add__ticket">
-                        <a
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#newTicketModal"
-                        >
-                          <i class="fas fa-plus-circle"></i> New Ticket
-                          <div class="sub-title">สร้าง Ticket ใหม่</div>
-                        </a>
-                      </div>
+<body>
+  <!-- navbar -->
+  <%- include('../../partials/navbar.ejs'); %>
+
+  <div v-cloak id="app">
+    <!-- For rendev vuetify  -->
+    <v-app>
+      <!-- content -->
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content">
+        <div class="container-fluid py-2">
+          <div class="row">
+            <div class="col-12">
+              <div class="card mb-4">
+                <div class="card-header pb-3">
+                  <div class="row">
+                    <div class="col-6 col-md-3">
+                      <h6>Ticket list</h6>
+                      <div class="sub-title">รายการ Ticket</div>
+                    </div>
+                    <div class="col-6 col-md-9 content-add__ticket">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                        <i class="fas fa-plus-circle"></i> New Ticket
+                        <div class="sub-title">สร้าง Ticket ใหม่</div>
+                      </a>
                     </div>
                   </div>
-                  <div class="card-body px-3 pt-0 pb-2">
-                    <!-- search -->
-                    <div
-                      class="search__bar ms-md-auto pe-md-3 d-flex align-items-center mb-3"
-                    >
-                      <div class="input-group">
-                        <span class="input-group-text text-body"
-                          ><i class="fas fa-search" aria-hidden="true"></i
-                        ></span>
-                        <input
-                          v-model="table.search"
-                          type="text"
-                          class="form-control px-3"
-                          placeholder="Type here..."
-                        />
-                      </div>
+                </div>
+                <div class="card-body px-3 pt-0 pb-2">
+                  <!-- search -->
+                  <div class="search__bar ms-md-auto pe-md-3 d-flex align-items-center mb-3">
+                    <div class="input-group">
+                      <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                      <input v-model="table.search" type="text" class="form-control px-3" placeholder="Type here..." />
                     </div>
+                  </div>
 
-                    <div class="table-responsive px-2">
-                      <v-data-table
-                        class="table align-items-center mb-0"
-                        :headers="table.headers"
-                        :items="table.items"
-                        :search="table.search"
-                        :items-per-page="5"
-                        class="elevation-1"
-                      >
-                        <!-- DATE CREATED -->
-                        <template v-slot:item.create_date="{ item }">
-                          <span class="text-secondary text-xs font-weight-bold">
-                            {{
+                  <div class="table-responsive px-2">
+                    <v-data-table class="table align-items-center mb-0" :headers="table.headers" :items="table.items"
+                      :search="table.search" :items-per-page="5" class="elevation-1">
+                      <!-- DATE CREATED -->
+                      <template v-slot:item.create_date="{ item }">
+                        <span class="text-secondary text-xs font-weight-bold">
+                          {{
                               moment
                                 .unix(item.create_date)
                                 .locale("th")
                                 .format("DD/MM/YYYY HH:mm")
-                            }}</span
-                          >
-                        </template>
+                            }}</span>
+                      </template>
 
-                        <!-- INFORMER -->
-                        <template v-slot:item.mname="{ item }">
-                          <div class="d-flex px-2 py-1">
-                            <div>
-                              <v-avatar
-                                class="me-3 white--text"
-                                :color="profileColor"
-                                rounded
-                                size="30"
-                              >
-                                {{ item.mname.charAt(0) }}
-                              </v-avatar>
-                            </div>
-                            <div
-                              class="d-flex flex-column justify-content-center"
-                            >
-                              <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
-                              <p class="text-xs text-secondary mb-0">
-                                {{ item.mcode }}
-                              </p>
-                            </div>
+                      <!-- INFORMER -->
+                      <template v-slot:item.mname="{ item }">
+                        <div class="d-flex px-2 py-1">
+                          <div>
+                            <v-avatar class="me-3 white--text" :color="profileColor" rounded size="30">
+                              {{ item.mname.charAt(0) }}
+                            </v-avatar>
                           </div>
-                        </template>
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
+                            <p class="text-xs text-secondary mb-0">
+                              {{ item.mcode }}
+                            </p>
+                          </div>
+                        </div>
+                      </template>
 
-                        <!-- TYPE -->
-                        <template v-slot:item.catalog_name="{ item }">
-                          <p class="text-xs font-weight-bold mb-0">
-                            {{ item.catalog_nameTH }}
-                          </p>
-                          <p class="text-xs text-secondary mb-0">
-                            {{ item.catalog_nameEN }}
-                          </p>
-                        </template>
+                      <!-- TYPE -->
+                      <template v-slot:item.catalog_name="{ item }">
+                        <p class="text-xs font-weight-bold mb-0">
+                          {{ item.catalog_nameTH }}
+                        </p>
+                        <p class="text-xs text-secondary mb-0">
+                          {{ item.catalog_nameEN }}
+                        </p>
+                      </template>
 
-                        <!-- STATUS -->
-                        <template v-slot:item.status="{ item }">
-                          <span
-                            v-if="item.status == 'Close'"
-                            class="badge badge-font-dark badge-sm bg-gradient-success"
-                          >
-                            {{ item.status }}</span
-                          >
+                      <!-- STATUS -->
+                      <template v-slot:item.status="{ item }">
+                        <span v-if="item.status == 'Close'" class="badge badge-font-dark badge-sm bg-gradient-success">
+                          {{ item.status }}</span>
 
-                          <span
-                            v-else
-                            class="badge badge-sm badge-font-dark bg-gradient-warning"
-                          >
-                            {{ item.status }}</span
-                          >
-                        </template>
+                        <span v-else class="badge badge-sm badge-font-dark bg-gradient-warning">
+                          {{ item.status }}</span>
+                      </template>
 
-                        <!-- LAST UPDATE -->
-                        <template v-slot:item.approve_date="{ item }">
-                          <span
-                            v-if="item.approve_date != 0"
-                            class="text-secondary text-xs font-weight-bold"
-                          >
-                            {{
+                      <!-- LAST UPDATE -->
+                      <template v-slot:item.approve_date="{ item }">
+                        <span v-if="item.approve_date != 0" class="text-secondary text-xs font-weight-bold">
+                          {{
                               moment
                                 .unix(item.approve_date)
                                 .locale("th")
                                 .format("DD/MM/YYYY HH:mm")
-                            }}</span
-                          >
+                            }}</span>
 
-                          <span
-                            v-else
-                            class="text-secondary text-xs font-weight-bold"
-                          >
-                            -
-                          </span>
-                        </template>
-
-                        <!-- VIEW -->
-                        <template v-slot:item.actions="{ item }">
-                          <a
-                            class="btn btn-link pe-3 ps-0 mb-0 ms-auto"
-                            :href="`/user/support/scm/thread/detail/${item.ticket_id}`"
-                          >
-                            VIEW
-                          </a>
-                        </template>
-                      </v-data-table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-
-        <!-- new ticket Modal -->
-        <div
-          class="modal fade"
-          ref="newticketmodal"
-          id="newTicketModal"
-          tabindex="-1"
-          aria-labelledby="newTicketModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">
-                  New Ticket
-                  <div class="sub-title">แจ้งปัญหา Ticket</div>
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <!-- overlay loading -->
-                <div class="text-center">
-                  <v-overlay v-if="isLoading" opacity="1">
-                    <%- include('../../partials/loading.ejs'); %>
-                  </v-overlay>
-                </div>
-
-                <!-- alert message -->
-                <div>
-                  <v-alert
-                    v-model="alert"
-                    dense
-                    border="left"
-                    transition="scale-transition"
-                    type="warning"
-                  >
-                    <div class="text-h6">Warning</div>
-                    <div>
-                      {{ textAlert }}
-                      <div class="sub-title-warning">{{ subTextAlert }}</div>
-                    </div>
-                  </v-alert>
-                </div>
-
-                <!-- modal content -->
-                <div class="px-4">
-                  <form @submit.prevent="submitNewTicket">
-                    <div class="form-group">
-                      <label>Topic</label>
-                      <div class="sub-title">หัวข้อ</div>
-                      <div class="mt-1 mb-3">
-                        <select
-                          v-model="form.selectType"
-                          name="selectedType"
-                          class="form-control"
-                        >
-                          <option value="" disabled selected>
-                            Select your option / เลือกหัวข้อปัญหา
-                          </option>
-                          <% for (var i = 0; i < category.length; i++) { %>
-                          <option value="<%= category[i].catalog_id %>">
-                            <%- category[i].catalog_nameTH %>
-                          </option>
-                          <% } %>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label>Detail</label>
-                      <div class="sub-title">รายละเอียด</div>
-                      <div class="mt-1 mb-3">
-                        <textarea
-                          name="detail"
-                          v-model="form.inputDetail"
-                          class="form-control"
-                          placeholder="รายละเอียด / detail"
-                          aria-label="รายละเอียด / detail"
-                        ></textarea>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label>Attach file</label>
-                      <div class="sub-title">แนบไฟล์เพิ่มเติม</div>
-                      <div class="mt-1 mb-3">
-                        <input
-                          accept="image/*"
-                          name="fileUpload"
-                          @change="uploadFile($event)"
-                          ref="file"
-                          type="file"
-                          class="form-control"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-button">
-                      <button
-                        ref="close"
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-
-                      <button type="submit" class="btn bg-gradient-primary">
-                        Create Ticket
-                      </button>
-                    </div>
-                  </form>
-
-                  <div class="text-center">
-                    <v-snackbar v-model="snackbar" :timeout="timeout">
-                      {{ text }}
-                      <template v-slot:action="{ attrs }">
-                        <v-btn
-                          color="blue"
-                          text
-                          v-bind="attrs"
-                          @click="snackbar = false"
-                        >
-                          Close
-                        </v-btn>
+                        <span v-else class="text-secondary text-xs font-weight-bold">
+                          -
+                        </span>
                       </template>
-                    </v-snackbar>
+
+                      <!-- VIEW -->
+                      <template v-slot:item.actions="{ item }">
+                        <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto"
+                          :href="`/user/support/scm/thread/detail/${item.ticket_id}`">
+                          VIEW
+                        </a>
+                      </template>
+                    </v-data-table>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </v-app>
-    </div>
+      </main>
 
-    <!-- new ticket modal end -->
-    <%- include('../../partials/footer.ejs'); %>
+      <!-- new ticket Modal -->
+      <div class="modal fade" ref="newticketmodal" id="newTicketModal" tabindex="-1"
+        aria-labelledby="newTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                New Ticket
+                <div class="sub-title">แจ้งปัญหา Ticket</div>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- overlay loading -->
+              <div class="text-center">
+                <v-overlay v-if="isLoading" opacity="1">
+                  <%- include('../../partials/loading.ejs'); %>
+                </v-overlay>
+              </div>
 
-    <script type="text/javascript">
-      const baseUrl = "<%- baseUrl %>";
-      const role = "<%- role %>";
+              <!-- alert message -->
+              <div>
+                <v-alert v-model="alert" dense border="left" transition="scale-transition" type="warning">
+                  <div class="text-h6">Warning</div>
+                  <div>
+                    {{ textAlert }}
+                    <div class="sub-title-warning">{{ subTextAlert }}</div>
+                  </div>
+                </v-alert>
+              </div>
 
-      let app = new Vue({
-        el: "#app",
-        vuetify: new Vuetify(), // called vuetify
-        data: {
-          isLoading: false,
-          socket: null,
-          alert: false,
-          textAlert: "",
-          subTextAlert: "",
-          form: {
-            selectType: "",
-            inputDetail: "",
-            fileUpload: "",
-          },
-          snackbar: false,
-          text: "",
-          timeout: 2000,
-          profileColor: role == "user" ? "orange" : "purple",
-          table: {
-            headers: [
-              {
-                text: "TICKETID",
-                align: "start",
-                value: "ticket_id",
-              },
-              {
-                text: "DATE CREATED",
-                value: "create_date",
-              },
-              {
-                text: "INFORMER",
-                value: "mname",
-              },
-              {
-                text: "TICKET TYPE",
-                value: "catalog_name",
-              },
-              {
-                text: "STATUS",
-                align: "center",
-                value: "status",
-              },
-              {
-                text: "LAST UPDATE",
-                align: "center",
-                value: "approve_date",
-              },
-              {
-                align: "center",
-                value: "actions",
-              },
-            ],
+              <!-- modal content -->
+              <div class="px-4">
+                <form @submit.prevent="submitNewTicket">
+                  <div class="form-group">
+                    <label>Topic</label>
+                    <div class="sub-title">หัวข้อ</div>
+                    <div class="mt-1 mb-3">
+                      <select v-model="form.selectType" name="selectedType" class="form-control">
+                        <option value="" disabled selected>
+                          Select your option / เลือกหัวข้อปัญหา
+                        </option>
+                        <% for (var i = 0; i < category.length; i++) { %>
+                        <option value="<%= category[i].catalog_id %>">
+                          <%- category[i].catalog_nameTH %>
+                        </option>
+                        <% } %>
+                      </select>
+                    </div>
+                  </div>
 
-            items: [],
-            search: "",
-          },
+                  <div class="form-group">
+                    <label>Detail</label>
+                    <div class="sub-title">รายละเอียด</div>
+                    <div class="mt-1 mb-3">
+                      <textarea name="detail" v-model="form.inputDetail" class="form-control"
+                        placeholder="รายละเอียด / detail" aria-label="รายละเอียด / detail"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Attach file</label>
+                    <div class="sub-title">แนบไฟล์เพิ่มเติม</div>
+                    <div class="mt-1 mb-3">
+                      <input accept="image/*" name="fileUpload" @change="uploadFile($event)" ref="file" type="file"
+                        class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="form-button">
+                    <button ref="close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                      Close
+                    </button>
+
+                    <button type="submit" class="btn bg-gradient-primary">
+                      Create Ticket
+                    </button>
+                  </div>
+                </form>
+
+                <div class="text-center">
+                  <v-snackbar v-model="snackbar" :timeout="timeout">
+                    {{ text }}
+                    <template v-slot:action="{ attrs }">
+                      <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+                        Close
+                      </v-btn>
+                    </template>
+                  </v-snackbar>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </v-app>
+  </div>
+
+  <!-- new ticket modal end -->
+  <%- include('../../partials/footer.ejs'); %>
+
+  <script type="text/javascript">
+    const baseUrl = "<%- baseUrl %>";
+    const role = "<%- role %>";
+
+    let app = new Vue({
+      el: "#app",
+      vuetify: new Vuetify(), // called vuetify
+      data: {
+        isLoading: false,
+        socket: null,
+        alert: false,
+        textAlert: "",
+        subTextAlert: "",
+        form: {
+          selectType: "",
+          inputDetail: "",
+          fileUpload: "",
+        },
+        snackbar: false,
+        text: "",
+        timeout: 2000,
+        profileColor: role == "user" ? "orange" : "purple",
+        table: {
+          headers: [{
+              text: "TICKETID",
+              align: "start",
+              value: "ticket_id",
+            },
+            {
+              text: "DATE CREATED",
+              value: "create_date",
+            },
+            {
+              text: "INFORMER",
+              value: "mname",
+            },
+            {
+              text: "TICKET TYPE",
+              value: "catalog_name",
+            },
+            {
+              text: "STATUS",
+              align: "center",
+              value: "status",
+            },
+            {
+              text: "LAST UPDATE",
+              align: "center",
+              value: "approve_date",
+            },
+            {
+              align: "center",
+              value: "actions",
+            },
+          ],
+
+          items: [],
+          search: "",
+        },
+      },
+
+      // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
+      watch: {},
+
+      // computed จะคืนค่าล่าสุดเท่านั้น
+      computed: {
+        async loadTicket() {
+          let config = {
+            method: "POST",
+            url: `${baseUrl}user/ticket/list`,
+            data: {
+              status: [1, 2],
+            },
+          };
+
+          await axios(config)
+            .then((response) => (this.table.items = response.data.data))
+            .catch((error) => console.log(error));
+        },
+      },
+
+      // methods จะทำใหม่และคือค่านั้นกลับมา
+      methods: {
+        clearModal() {
+          this.form.selectType = "";
+          this.form.inputDetail = "";
+          this.$refs.file.value = null;
         },
 
-        // listen กับ Data ที่เราต้องการ หากมีการเปลี่ยนแปลงค่า จะสามารถสั่งให้ทำ func บางอย่างได้
-        watch: {},
-
-        // computed จะคืนค่าล่าสุดเท่านั้น
-        computed: {
-          async loadTicket() {
-            let config = {
-              method: "POST",
-              url: `${baseUrl}user/ticket/list`,
-              data: {
-                status: [1, 2],
-              },
-            };
-
-            await axios(config)
-              .then((response) => (this.table.items = response.data.data))
-              .catch((error) => console.log(error));
-          },
+        uploadFile(event) {
+          this.form.fileUpload = event.target.files[0];
         },
 
-        // methods จะทำใหม่และคือค่านั้นกลับมา
-        methods: {
-          clearModal() {
-            this.form.selectType = "";
-            this.form.inputDetail = "";
-            this.$refs.file.value = null;
-          },
+        async submitNewTicket() {
+          if (!this.form.selectType || !this.form.inputDetail) {
+            this.alert = true;
+            this.textAlert = "Please fill out the information completely";
+            this.subTextAlert = "กรุณากรอกข้อมูลให้ครบถ้วน";
+            setTimeout(() => {
+              this.alert = false;
+            }, 2000);
+            return;
+          }
 
-          uploadFile(event) {
-            this.form.fileUpload = event.target.files[0];
-          },
+          // show loading
+          this.isLoading = true;
 
-          async submitNewTicket() {
-            if (!this.form.selectType || !this.form.inputDetail) {
-              this.alert = true;
-              this.textAlert = "Please fill out the information completely";
-              this.subTextAlert = "กรุณากรอกข้อมูลให้ครบถ้วน";
-              setTimeout(() => {
-                this.alert = false;
-              }, 2000);
-              return;
-            }
+          let result = await axios
+            .post(`${baseUrl}user/add/new/ticket`, this.form, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(function (response) {
+              return response.data;
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
 
-            // show loading
-            this.isLoading = true;
-
-            let result = await axios
-              .post(`${baseUrl}user/add/new/ticket`, this.form, {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              })
-              .then(function (response) {
-                return response.data;
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-
-            if (result.status === 200) {
-              setTimeout(() => {
-                this.isLoading = false;
-                this.snackbar = true;
-                this.text = result.message;
-                setTimeout(() => {
-                  this.$refs.close.click();
-                  window.location.reload();
-                }, 1000);
-              }, 2000);
-              return;
-            }
-
+          if (result.status === 200) {
             setTimeout(() => {
               this.isLoading = false;
               this.snackbar = true;
               this.text = result.message;
+              setTimeout(() => {
+                this.$refs.close.click();
+                window.location.reload();
+              }, 1000);
             }, 2000);
             return;
-          },
-        },
+          }
 
-        async created() {
-          await this.loadTicket;
+          setTimeout(() => {
+            this.isLoading = false;
+            this.snackbar = true;
+            this.text = result.message;
+          }, 2000);
+          return;
         },
+      },
 
-        mounted() {
-          // clear modal when dismiss
-          $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal);
-        },
-      });
-    </script>
-  </body>
+      async created() {
+        await this.loadTicket;
+      },
+
+      mounted() {
+        // clear modal when dismiss
+        $(this.$refs.newticketmodal).on("hidden.bs.modal", this.clearModal);
+      },
+    });
+  </script>
+</body>
+
 </html>

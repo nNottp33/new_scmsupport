@@ -15,15 +15,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// methods get
+// get methods
 userRouter.get("/support/scm", userController.UserThread);
 userRouter.get("/support/scm/thread/detail/:ticketid", userController.DetailThread);
 userRouter.get("/ticket/history", userController.HistoryList);
 
-// methods post
+// post methods
 userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
 userRouter.post("/ticket/history/search", userController.SearchHistory);
 userRouter.post("/add/comment", upload.any('fileComment'), userController.AddComment);
+
+// delete methods
+userRouter.delete("/delete/comment", userController.DeleteComment);
 
 module.exports = userRouter;

@@ -1,16 +1,13 @@
 <!-- Load bootstrap scripts -->
-<script
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-  crossorigin="anonymous"
-></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
 <!-- Load Soft Ui script -->
 <script src="/assets/js/core/popper.min.js"></script>
 <script src="/assets/js/core/bootstrap.min.js"></script>
 <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
-<script>
+<script type="text/javascript">
   var win = navigator.platform.indexOf("Win") > -1;
   if (win && document.querySelector("#sidenav-scrollbar")) {
     var options = {
@@ -18,15 +15,6 @@
     };
     Scrollbar.init(document.querySelector("#sidenav-scrollbar"), options);
   }
-
-  // toggle notification
-  let toogleNotification = () => {
-    document.querySelector(".dropdown-menu").classList.toggle("show");
-  };
-
-  document
-    .querySelector(".dropdown-toggle")
-    .addEventListener("click", toogleNotification);
 </script>
 
 <!-- Github buttons -->

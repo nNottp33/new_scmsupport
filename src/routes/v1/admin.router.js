@@ -1,6 +1,10 @@
-// const adminRouter = require("express").Router();
-// const adminController = require("../../controllers/v1/admin.controller");
+const adminRouter = require("express").Router();
+const adminController = require("../../controllers/v1/admin.controller");
 
-// adminRouter.get("/support/scm", adminController.CheckUser);
+// methods GET
+adminRouter.get("/support/scm", adminController.AdminThread);
 
-// module.exports = adminRouter;
+// methods POST
+
+
+module.exports = adminRouter;

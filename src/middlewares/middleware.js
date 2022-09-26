@@ -5,20 +5,40 @@ const config = require("../configs/config");
 const chalk = require("chalk");
 
 const CheckUser = async (req, res, next) => {
-  let { mem_id } = req.query;
+
+  let { mem_id, user } = req.query;
+  // split data from query params
+  let resultAdminData = user ? user.split("-") : 'unknow';
 
   // check session
-  if (req.session.sessionsData) {
-    return next();
-  }
+  if (req.session.sessionsData) return next();
 
+
+  if (user) {
+    if (resultAdminData.length === 3) {
+      // set session data admin
+      req.session.sessionsData = {
+        isAuth: true,
+        role: "admin",
+        adminId: resultAdminData[1],
+        adminUname: resultAdminData[2],
+        branch: resultAdminData[0],
+      };
+
+      logger.info(`Set session! Admin: ${resultAdminData[2]} has logged in`)
+
+      return next();
+    }
+  }
 
   // check params query user
   if (!mem_id) {
-    if (config.node_env !== 'development') return res.status(httpStatus.NOT_FOUND).redirect('https://www.successmore1.com/member/index.php?sessiontab=6')
+    // if no params redirect to master url
+    if (config.node_env !== 'development') return res.status(httpStatus.NOT_FOUND).redirect('https://www.successmore1.com/')
 
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
+
 
   // fetch user with api for check
   let resultMember = await GetMember(mem_id);

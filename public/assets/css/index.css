@@ -381,3 +381,12 @@ textarea {
         width: 100%;
     }
 }
+
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+.manage-comment,
+.manage-comment>a>.v-icon.v-icon {
+    font-size: 13px !important;
+}
