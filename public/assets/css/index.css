@@ -386,7 +386,6 @@ textarea {
     cursor: pointer;
 }
 
-.manage-comment,
-.manage-comment>a>.v-icon.v-icon {
-    font-size: 13px !important;
+.icon-manage-comment {
+    font-size: 12px !important;
 }

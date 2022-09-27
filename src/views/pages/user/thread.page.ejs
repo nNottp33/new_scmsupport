@@ -1,415 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <%- include('../../partials/head.ejs'); %>
+  </head>
 
-<head>
-  <%- include('../../partials/head.ejs'); %>
-</head>
+  <body>
+    <!-- navbar -->
+    <%- include('../../partials/navbar.ejs'); %>
 
-<body>
-  <!-- navbar -->
-  <%- include('../../partials/navbar.ejs'); %>
-
-  <div v-cloak id="app">
-    <!-- For rendev vuetify  -->
-    <v-app>
-      <div style="width: 100%; max-width: 800px" class="mt-0 m-auto justify-content-center">
-        <!-- content -->
-        <main class="main-content max-height-vh-100 h-100 border-radius-lg content">
-          <!-- back button -->
-          <div style="
+    <div v-cloak id="app">
+      <!-- For rendev vuetify  -->
+      <v-app>
+        <div
+          style="width: 100%; max-width: 800px"
+          class="mt-0 m-auto justify-content-center"
+        >
+          <!-- content -->
+          <main
+            class="main-content max-height-vh-100 h-100 border-radius-lg content"
+          >
+            <!-- back button -->
+            <div
+              style="
                 box-shadow: rgb(0 0 0 / 5%) 0px 2px 60px 0px;
                 border-radius: 20px;
-              " class="container blur z-index-sticky">
-            <div class="row">
-              <div class="col-1 col-md-1">
-                <a href="javascript:history.back()">
-                  <v-icon> mdi-arrow-left </v-icon>
-                </a>
-              </div>
-              <div class="col-11 col-md-11">
-                <p class="text-sm font-weight-bold mb-0">
-                  <%- forum[0].catalog_nameTH %>
-                </p>
-                <p class="text-sm text-secondary mb-0">
-                  <%- forum[0].catalog_nameEN %>
-                </p>
+              "
+              class="container blur z-index-sticky"
+            >
+              <div class="row">
+                <div class="col-1 col-md-1">
+                  <a href="javascript:history.back()">
+                    <v-icon> mdi-arrow-left </v-icon>
+                  </a>
+                </div>
+                <div class="col-11 col-md-11">
+                  <p class="text-sm font-weight-bold mb-0">
+                    <%- forum[0].catalog_nameTH %>
+                  </p>
+                  <p class="text-sm text-secondary mb-0">
+                    <%- forum[0].catalog_nameEN %>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="container py-2">
-            <div class="card card-blog card-plain">
-              <% if (forum[0].attach_file) { %>
-              <div class="position-relative">
-                <a class="d-block blur-shadow-image">
-                  <img src="/public/files_upload/<%= forum[0].attach_file %>" alt="img-blur-shadow"
-                    class="img-fluid border-radius-lg" />
-                </a>
-              </div>
-              <% } %>
-
-              <div class="card-body px-0 pt-4">
-                <div class="px-3">
-                  <p class="text-gradient text-primary text-gradient font-weight-bold text-sm text-uppercase">
-                    Detail / รายละเอียด
-                  </p>
-
-                  <p><%- forum[0].detail %></p>
+            <div class="container py-2">
+              <div class="card card-blog card-plain">
+                <% if (forum[0].attach_file) { %>
+                <div class="position-relative">
+                  <a class="d-block blur-shadow-image">
+                    <img
+                      src="/public/files_upload/<%= forum[0].attach_file %>"
+                      alt="img-blur-shadow"
+                      class="img-fluid border-radius-lg"
+                    />
+                  </a>
                 </div>
+                <% } %>
 
-                <div class="container px-0 mt-3 mb-5">
-                  <div class="row height d-flex justify-content-center align-items-center">
-                    <div class="col-md-12">
-                      <div class="card">
-                        <div class="p-3">
-                          <h6>Comments</h6>
-                          <div class="sub-title">ความคิดเห็น</div>
-                        </div>
+                <div class="card-body px-0 pt-4">
+                  <div class="px-3">
+                    <p
+                      class="text-gradient text-primary text-gradient font-weight-bold text-sm text-uppercase"
+                    >
+                      Detail / รายละเอียด
+                    </p>
 
-                        <% if (forum[0].status_id === 1 || forum[0].status_id
+                    <p><%- forum[0].detail %></p>
+                  </div>
+
+                  <div class="container px-0 mt-3 mb-5">
+                    <div
+                      class="row height d-flex justify-content-center align-items-center"
+                    >
+                      <div class="col-md-12">
+                        <div class="card">
+                          <div class="p-3">
+                            <h6>Comments</h6>
+                            <div class="sub-title">ความคิดเห็น</div>
+                          </div>
+
+                          <% if (forum[0].status_id === 1 || forum[0].status_id
                           === 2) { %>
-                        <div class="mb-5">
-                          <div class="d-flex flex-row p-3 py-1 m-auto justify-content-center">
-                            <div class="w-100">
-                              <form @submit.prevent="onComment">
-                                <div class="d-flex flex-row">
-                                  <div class="file-input flex-column py-2 px-2 m-auto justify-content-center">
-                                    <input @change="onFileChange($event)" accept="image/*" type="file"
-                                      name="fileComment" id="file-input" ref="fileinput" class="file-input__input" />
+                          <div class="mb-5">
+                            <div
+                              class="d-flex flex-row p-3 py-1 m-auto justify-content-center"
+                            >
+                              <div class="w-100">
+                                <form @submit.prevent="onComment">
+                                  <div class="d-flex flex-row">
+                                    <div
+                                      class="file-input flex-column py-2 px-2 m-auto justify-content-center"
+                                    >
+                                      <input
+                                        @change="onFileChange($event)"
+                                        accept="image/*"
+                                        type="file"
+                                        name="fileComment"
+                                        id="file-input"
+                                        ref="fileinput"
+                                        class="file-input__input"
+                                      />
 
-                                    <label class="file-input__label" for="file-input">
-                                      <v-icon color="orange lighter-2">
-                                        mdi-image-plus-outline
-                                      </v-icon>
-                                    </label>
-                                  </div>
+                                      <label
+                                        class="file-input__label"
+                                        for="file-input"
+                                      >
+                                        <v-icon color="orange lighter-2">
+                                          mdi-image-plus-outline
+                                        </v-icon>
+                                      </label>
+                                    </div>
 
-                                  <div class="flex-column w-100">
-                                    <textarea class="form-control comment px-3" rows="1" placeholder="Comment..."
-                                      ref="commentInput" v-model="comment">
+                                    <div class="flex-column w-100">
+                                      <textarea
+                                        class="form-control comment px-3"
+                                        rows="1"
+                                        placeholder="Comment..."
+                                        ref="commentInput"
+                                        v-model="comment"
+                                      >
                                       </textarea>
-                                  </div>
+                                    </div>
 
-                                  <div class="flex-column pl-3 pr-0 m-auto justify-content-center">
-                                    <v-btn type="submit" :disabled="isDisabled" outlined rounded color="orange">
-                                      POST
-                                    </v-btn>
+                                    <div
+                                      class="flex-column pl-3 pr-0 m-auto justify-content-center"
+                                    >
+                                      <v-btn
+                                        type="submit"
+                                        :disabled="isDisabled"
+                                        outlined
+                                        rounded
+                                        color="orange"
+                                      >
+                                        POST
+                                      </v-btn>
+                                    </div>
                                   </div>
-                                </div>
-                              </form>
+                                </form>
 
-                              <div v-if="imageUrl" class="d-flex flex-row px-10 py-2">
-                                <div id="previewImage">
-                                  <img :src="imageUrl" />
+                                <div
+                                  v-if="imageUrl"
+                                  class="d-flex flex-row px-10 py-2"
+                                >
+                                  <div id="previewImage">
+                                    <img :src="imageUrl" />
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <% } %>
+                          <% } %>
 
-                        <div v-if="itemComment" class="mt-2 mb-5">
-                          <div v-for="item in itemComment" class="d-flex flex-row p-3">
-                            <!-- avatars -->
-                            <v-avatar class="mr-3" rounded :color="item.role == 'user' ? 'orange' : 'purple'" size="40">
-                              <span class="white--text text-h5">
-                                {{ item.u_name.charAt(0) }}
-                              </span>
-                            </v-avatar>
+                          <div v-if="itemComment" class="mt-2 mb-5">
+                            <div
+                              v-for="item in itemComment"
+                              class="d-flex flex-row p-3"
+                            >
+                              <!-- avatars -->
+                              <v-avatar
+                                class="mt-2"
+                                rounded
+                                :color="item.role == 'user' ? 'orange' : 'purple'"
+                                size="40"
+                              >
+                                <span class="white--text text-h5">
+                                  {{ item.u_name.charAt(0) }}
+                                </span>
+                              </v-avatar>
 
-                            <div class="w-100">
-                              <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex flex-row align-items-center">
-                                  <span class="mr-2">
-                                    {{ item.u_name }}
-                                  </span>
-                                </div>
+                              <div class="w-100 ml-2">
+                                <div
+                                  class="d-flex justify-content-between align-items-center"
+                                >
+                                  <div class="pa-1 mr-auto">
+                                    <span class="mr-2">
+                                      {{ item.u_name }}
+                                    </span>
+                                  </div>
 
-                                <small class="comment__time">{{
+                                  <small class="pa-1 comment__time"
+                                    >{{
                                       moment
                                         .unix(item.date_mes)
                                         .locale("th")
                                         .format("DD/MM/YYYY HH:mm")
                                     }}
-                                </small>
+                                  </small>
+
+                                  <a
+                                    v-if="item.u_id === uId"
+                                    href="#"
+                                    @click="deleteComment(item.mid)"
+                                    class="pa-1"
+                                  >
+                                    <v-icon class="icon-manage-comment">
+                                      mdi-trash-can-outline
+                                    </v-icon>
+                                  </a>
+                                </div>
+
+                                <p class="comment-text my-0 py-0">
+                                  {{ item.txt_msg }}
+                                </p>
+
+                                <div v-if="item.attach_file">
+                                  <img
+                                    @click="fullImage(item.attach_file)"
+                                    width="130"
+                                    :src="setImgUrl(item.attach_file)"
+                                  />
+                                </div>
                               </div>
-
-                              <p class="comment-text mb-0">
-                                {{ item.txt_msg }}
-                              </p>
-
-                              <div v-if="item.attach_file">
-                                <img @click="fullImage(item.attach_file)" width="130"
-                                  :src="setImgUrl(item.attach_file)" />
-                              </div>
-
-                              <div class="manage-comment m-auto justify-content-center">
-                                <a @click="deleteComment(item.mid)" href="#">
-                                  <v-icon> mdi-trash-can-outline </v-icon> Delete
-                                </a>
-                              </div>
-
                             </div>
                           </div>
                         </div>
-
-                        <!-- dialog delete comment -->
-                        <v-dialog v-model="dialog" max-width="290">
-                          <v-card>
-                            <v-card-title class="text-h5">
-                              Use Google's location service?
-                            </v-card-title>
-
-                            <v-card-text>
-                              Let Google help apps determine location. This means sending anonymous location data to
-                              Google, even when no apps are running.
-                            </v-card-text>
-
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-
-                              <v-btn color="green darken-1" text @click="dialog = false">
-                                Disagree
-                              </v-btn>
-
-                              <v-btn color="green darken-1" text @click="dialog = false">
-                                Agree
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-
-
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
 
-      <!-- The Modal -->
-      <div ref="fullimage" id="fullImage" class="modal modal-image">
-        <!-- The Close Button -->
-        <span @click="closeImage" ref="closeimage" class="close">&times;</span>
+        <!-- The Modal -->
+        <div ref="fullimage" id="fullImage" class="modal modal-image">
+          <!-- The Close Button -->
+          <span @click="closeImage" ref="closeimage" class="close"
+            >&times;</span
+          >
 
-        <!-- Modal Content (The Image) -->
-        <img class="modal-content" ref="img01" :src="imageFullSrc" />
-      </div>
+          <!-- Modal Content (The Image) -->
+          <img class="modal-content" ref="img01" :src="imageFullSrc" />
+        </div>
 
-      <div class="text-center">
-        <v-snackbar v-model="snackbar">
-          {{ text }}
+        <div class="text-center">
+          <v-snackbar v-model="snackbar">
+            {{ text }}
 
-          <template v-slot:action="{ attrs }">
-            <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
-              Close
-            </v-btn>
-          </template>
-        </v-snackbar>
-      </div>
-    </v-app>
-  </div>
+            <template v-slot:action="{ attrs }">
+              <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+                Close
+              </v-btn>
+            </template>
+          </v-snackbar>
+        </div>
+      </v-app>
+    </div>
 
-  <!-- new ticket modal end -->
-  <%- include('../../partials/footer.ejs'); %>
+    <!-- new ticket modal end -->
+    <%- include('../../partials/footer.ejs'); %>
 
-  <script type="text/javascript">
-    const baseUrl = "<%- baseUrl %>";
-    const role = "<%- role %>";
-    const nameUser = "<%- memName %>";
-    const uId = "<%- memId %>";
-    const forum = JSON.parse(`<%-JSON.stringify(forum[0])%>`);
+    <script type="text/javascript">
+      const baseUrl = "<%- baseUrl %>";
+      const role = "<%- role %>";
+      const nameUser = "<%- memName %>";
+      const uId = "<%- memId %>";
+      const forum = JSON.parse(`<%-JSON.stringify(forum[0])%>`);
 
-    let app = new Vue({
-      el: "#app",
-      vuetify: new Vuetify(), // called vuetify
-      data: {
-        currentDate: moment().locale("th").format("DD/MM/YYYY HH:mm"),
-        comment: "",
-        socket: null,
-        isDisabled: true,
-        isLoading: false,
-        imageUrl: null,
-        imageFullSrc: null,
-        itemComment: forum.comment[0].mid == null ? [] : forum.comment.sort((a, b) => a.mid - b.mid),
-        fileComment: null,
-        snackbar: false,
-        text: null,
-        dialog: false,
-      },
-
-      watch: {
-        imageUrl(val) {
-          this.isDisabled = false;
-          this.$nextTick(() => {
-            if (!val) this.isDisabled = true;
-          });
+      let app = new Vue({
+        el: "#app",
+        vuetify: new Vuetify(), // called vuetify
+        data: {
+          currentDate: moment().locale("th").format("DD/MM/YYYY HH:mm"),
+          comment: "",
+          socket: null,
+          isDisabled: true,
+          isLoading: false,
+          imageUrl: null,
+          imageFullSrc: null,
+          itemComment:
+            forum.comment[0].mid == null
+              ? []
+              : forum.comment.sort((a, b) => a.mid - b.mid),
+          fileComment: null,
+          snackbar: false,
+          text: null,
+          dialog: false,
         },
 
-        comment(newItem, oldItem) {
-          let {
-            commentInput
-          } = this.$refs;
-          const lineHeightInPixels = 0.1;
-          this.isDisabled = false;
+        watch: {
+          imageUrl(val) {
+            this.isDisabled = false;
+            this.$nextTick(() => {
+              if (!val) this.isDisabled = true;
+            });
+          },
 
-          // Reset commentInput Height
-          commentInput.setAttribute(
-            `style`,
-            `height:${lineHeightInPixels}px;overflow-y:hidden;`,
-          );
+          comment(newItem, oldItem) {
+            let { commentInput } = this.$refs;
+            const lineHeightInPixels = 0.1;
+            this.isDisabled = false;
 
-          // Calculate number of lines (soft and hard)
-          const height = commentInput.style.height;
-          const scrollHeight = commentInput.scrollHeight;
-          commentInput.style.height = height;
-          const count = Math.floor(scrollHeight / lineHeightInPixels);
+            // Reset commentInput Height
+            commentInput.setAttribute(
+              `style`,
+              `height:${lineHeightInPixels}px;overflow-y:hidden;`,
+            );
 
-          // ฟังก์ชั่นนี้ก็จะทำหน้าที่เมื่อ DOM ถูก update แล้ว
-          this.$nextTick(() => {
-            if (!newItem) {
-              this.isDisabled = true;
-              commentInput.removeAttribute(`style`);
+            // Calculate number of lines (soft and hard)
+            const height = commentInput.style.height;
+            const scrollHeight = commentInput.scrollHeight;
+            commentInput.style.height = height;
+            const count = Math.floor(scrollHeight / lineHeightInPixels);
+
+            // ฟังก์ชั่นนี้ก็จะทำหน้าที่เมื่อ DOM ถูก update แล้ว
+            this.$nextTick(() => {
+              if (!newItem) {
+                this.isDisabled = true;
+                commentInput.removeAttribute(`style`);
+                return;
+              }
+
+              commentInput.setAttribute(
+                `style`,
+                `height:${count * lineHeightInPixels}px;overflow-y:hidden;`,
+              );
+            });
+          },
+        },
+
+        computed: {},
+
+        methods: {
+          closeImage() {
+            let { closeimage, fullimage } = this.$refs;
+            fullimage.setAttribute(`style`, `display:none`);
+          },
+
+          fullImage(image) {
+            let { fullimage } = this.$refs;
+            fullimage.setAttribute(`style`, `display:block`);
+            this.imageFullSrc = `/public/files_upload/${image}`;
+          },
+
+          setImgUrl(image) {
+            return `/public/files_upload/${image}`;
+          },
+
+          onFileChange(e) {
+            this.fileComment = e.target.files[0];
+            this.imageUrl = URL.createObjectURL(this.fileComment);
+          },
+
+          async onComment() {
+            let commentData = {
+              u_id: uId,
+              u_name: nameUser,
+              txt_msg: this.comment,
+              ticketId: forum.ticket_id,
+              attach_file: this.fileComment,
+            };
+
+            let result = await axios
+              .post(`${baseUrl}user/add/comment`, commentData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then(function (response) {
+                return response;
+              })
+              .catch(function (error) {
+                return error.response;
+              });
+
+            if (result.status === 404) {
+              this.snackbar = true;
+              this.text = result.data.message;
               return;
             }
 
-            commentInput.setAttribute(
-              `style`,
-              `height:${count * lineHeightInPixels}px;overflow-y:hidden;`,
+            this.socket.emit(
+              `comment`,
+              Object.assign(result.data.body, {
+                role: role,
+              }),
             );
-          });
-        },
-      },
 
-      computed: {
-
-      },
-
-      methods: {
-        closeImage() {
-          let {
-            closeimage,
-            fullimage
-          } = this.$refs;
-          fullimage.setAttribute(`style`, `display:none`);
-        },
-
-        fullImage(image) {
-          let {
-            fullimage
-          } = this.$refs;
-          fullimage.setAttribute(`style`, `display:block`);
-          this.imageFullSrc = `/public/files_upload/${image}`;
-        },
-
-        setImgUrl(image) {
-          return `/public/files_upload/${image}`;
-        },
-
-        onFileChange(e) {
-          this.fileComment = e.target.files[0];
-          this.imageUrl = URL.createObjectURL(this.fileComment);
-        },
-
-        async onComment() {
-          let commentData = {
-            u_id: uId,
-            u_name: nameUser,
-            txt_msg: this.comment,
-            ticketId: forum.ticket_id,
-            attach_file: this.fileComment,
-          };
-
-          let result = await axios
-            .post(`${baseUrl}user/add/comment`, commentData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then(function (response) {
-              return response;
-            })
-            .catch(function (error) {
-              return error.response;
-            });
-
-          if (result.status === 404) {
-            this.snackbar = true;
-            this.text = result.data.message;
-            return;
-          }
-
-          this.socket.emit(
-            `comment`,
-            Object.assign(result.data.body, {
-              role: role,
-            }),
-          );
-
-          // when send comment reset input comment
-          this.comment = null;
-        },
-
-        async deleteComment(id) {
-          let result = await axios.delete(`${baseUrl}user/delete/comment`, {
-              data: {
-                comment: id
-              }
-            })
-            .then(function (response) {
-              return response;
-            })
-            .catch(function (error) {
-              return error.response;
-            });
-
-
-          if (result.status === 404) {
-            this.snackbar = true;
-            this.text = result.data.message;
-            return;
-          }
-
-          this.itemComment = forum.comment.filter(comment => comment.mid !== id);
-          this.snackbar = true;
-          this.text = result.data.message;
-          return
-
-        },
-      },
-
-      async created() {
-        // create namespace and connect to the server io
-        this.socket = io("/thread");
-
-        let room = forum.ticket_id;
-        let name = nameUser;
-
-        this.socket.emit(
-          "join-post", {
-            name,
-            room,
+            // when send comment reset input comment
+            this.comment = null;
           },
-          (error) => {
-            if (error) {
+
+          async deleteComment(id) {
+            if (confirm("Delete comment?")) {
+              let result = await axios
+                .delete(`${baseUrl}user/delete/comment`, {
+                  data: {
+                    comment: id,
+                  },
+                })
+                .then(function (response) {
+                  return response;
+                })
+                .catch(function (error) {
+                  return error.response;
+                });
+
+              if (result.status === 404) {
+                this.snackbar = true;
+                this.text = result.data.message;
+                return;
+              }
+
+              let newComment = forum.comment.filter(
+                (comment) => comment.mid !== id,
+              );
+              this.itemComment = newComment;
               this.snackbar = true;
-              this.text = "Can't join post";
+              this.text = result.data.message;
+              return;
             }
           },
-        );
+        },
 
-        // get reply from server socket
-        this.socket.on(`comment`, (msg) => {
-          this.itemComment.push(msg);
-        });
-      },
+        async created() {
+          // create namespace and connect to the server io
+          this.socket = io("/thread");
 
-      mounted() {},
-    });
-  </script>
-</body>
+          let room = forum.ticket_id;
+          let name = nameUser;
 
+          this.socket.emit(
+            "join-post",
+            {
+              name,
+              room,
+            },
+            (error) => {
+              if (error) {
+                this.snackbar = true;
+                this.text = "Can't join post";
+              }
+            },
+          );
+
+          // get reply from server socket
+          this.socket.on(`comment`, (msg) => {
+            this.itemComment.push(msg);
+          });
+        },
+
+        mounted() {},
+      });
+    </script>
+  </body>
 </html>
