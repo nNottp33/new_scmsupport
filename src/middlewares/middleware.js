@@ -13,7 +13,6 @@ const CheckUser = async (req, res, next) => {
   // check session
   if (req.session.sessionsData) return next();
 
-
   if (user) {
     if (resultAdminData.length === 3) {
       // set session data admin
@@ -32,12 +31,13 @@ const CheckUser = async (req, res, next) => {
   }
 
   // check params query user
-  if (!mem_id) {
+  if (!mem_id || user) {
     // if no params redirect to master url
     if (config.node_env !== 'development') return res.status(httpStatus.NOT_FOUND).redirect('https://www.successmore1.com/')
 
     return res.status(httpStatus.NOT_FOUND).render("pages/error");
   }
+
 
 
   // fetch user with api for check

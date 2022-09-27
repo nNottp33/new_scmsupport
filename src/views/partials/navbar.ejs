@@ -1,5 +1,9 @@
 <% if (role === "user") { %>
 <!-- css for user navbar -->
 <%- include('./user/header.ejs'); %>
-<!-- css for user navbar end -->
+<!-- css for admin navbar end -->
+<% } %> <% if (role === "admin") { %>
+<!-- css for admin navbar -->
+<%- include('./admin/navbar.ejs'); %>
+<!-- css for admin navbar end -->
 <% } %>

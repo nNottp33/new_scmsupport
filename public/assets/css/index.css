@@ -389,3 +389,25 @@ textarea {
 .icon-manage-comment {
     font-size: 12px !important;
 }
+
+.admin-dropdown {
+    position: relative;
+}
+
+.admin-noti-list {
+    right: 10px !important;
+}
+
+.card-count___ticket {
+    cursor: pointer;
+    box-shadow: 0 20px 27px 0 rgb(255 196 0 / 5%);
+}
+
+.card-count___ticket:hover {
+    opacity: .8;
+    box-shadow: 0 20px 27px 0 rgb(255 196 0 / 13%)
+}
+
+.numbers>h5 {
+    margin-left: 8px;
+}

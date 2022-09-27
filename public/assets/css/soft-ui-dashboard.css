@@ -4049,6 +4049,7 @@ fieldset:disabled .btn {
   border-right: 0.3em solid transparent;
   border-bottom: 0;
   border-left: 0.3em solid transparent;
+  display: none;
 }
 
 .dropdown-toggle:empty::after {
