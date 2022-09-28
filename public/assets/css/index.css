@@ -411,3 +411,17 @@ textarea {
 .numbers>h5 {
     margin-left: 8px;
 }
+
+.v-chip {
+    cursor: pointer;
+}
+
+.actions-btn {
+    min-width: 35px !important;
+    padding: 0px 5.444444px !important;
+}
+
+.search___bar {
+    max-width: 350px;
+    width: 100%;
+}

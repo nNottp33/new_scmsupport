@@ -354,7 +354,7 @@
             };
 
             let result = await axios
-              .post(`${baseUrl}user/add/comment`, commentData, {
+              .post(`${baseUrl}add/comment`, commentData, {
                 headers: {
                   "Content-Type": "multipart/form-data",
                 },
@@ -381,12 +381,13 @@
 
             // when send comment reset input comment
             this.comment = null;
+            this.imageUrl = null;
           },
 
           async deleteComment(id) {
             if (confirm("Delete comment?")) {
               let result = await axios
-                .delete(`${baseUrl}user/delete/comment`, {
+                .delete(`${baseUrl}delete/comment`, {
                   data: {
                     comment: id,
                   },
@@ -404,10 +405,10 @@
                 return;
               }
 
-              let newComment = forum.comment.filter(
+              this.itemComment = this.itemComment.filter(
                 (comment) => comment.mid !== id,
               );
-              this.itemComment = newComment;
+
               this.snackbar = true;
               this.text = result.data.message;
               return;

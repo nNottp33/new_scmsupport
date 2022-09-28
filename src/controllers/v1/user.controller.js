@@ -181,63 +181,6 @@ const SearchHistory = async (req, res) => {
 }
 
 
-const AddComment = async (req, res) => {
-  let { u_id, u_name, txt_msg, ticketId } = req.body;
-  let filename = req.files.length > 0 ? req.files[0].filename : null;
-
-  let commentServer = {
-    type: 1,
-    u_id: u_id,
-    u_name: u_name,
-    txt_msg: txt_msg,
-    date_mes: moment.tz('Asia/Bangkok').unix(),
-    ticket_id: ticketId,
-    attach_file: filename,
-  }
-
-  try {
-    await conKnex.insert(commentServer)
-      .into('t_comment')
-      .then(async function (mid) {
-        commentServer.mid = mid[0];
-
-        return res.status(httpStatus.OK).send({
-          body: commentServer
-        });
-
-      });
-  } catch (e) {
-    logger.error(chalk.bold.red(e));
-
-    return res.status(httpStatus.NOT_FOUND).send({
-      message: "Can't comment"
-    })
-  }
-}
-
-
-const DeleteComment = async (req, res) => {
-  let { comment } = req.body;
-
-  try {
-    await conKnex('t_comment')
-      .where('mid', comment)
-      .del()
-
-    return res.status(httpStatus.OK).send({
-      message: 'Comment deleted!'
-    })
-
-  } catch (e) {
-    logger.error(chalk.bold.red(e));
-
-    return res.status(httpStatus.NOT_FOUND).send({
-      message: "Can't deleted"
-    })
-  }
-}
-
-
 module.exports = {
   UserThread,
   ThreadList,
@@ -245,7 +188,5 @@ module.exports = {
   NewTicket,
   HistoryList,
   SearchHistory,
-  AddComment,
-  DeleteComment
 };
 

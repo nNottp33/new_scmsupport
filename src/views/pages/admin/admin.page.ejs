@@ -16,7 +16,7 @@
             <!-- card status -->
             <div class="row">
               <div class="col-xl-4 col-12 mb-4">
-                <div class="card card-count___ticket" @click="loadTicket()">
+                <div class="card card-count___ticket" @click="filterTicket()">
                   <div class="card-body p-3">
                     <div class="row">
                       <div class="col-8">
@@ -45,7 +45,7 @@
                 </div>
               </div>
               <div class="col-xl-4 col-12 mb-4">
-                <div class="card card-count___ticket" @click="loadTicket(1)">
+                <div class="card card-count___ticket" @click="filterTicket(1)">
                   <div class="card-body p-3">
                     <div class="row">
                       <div class="col-8">
@@ -74,7 +74,7 @@
                 </div>
               </div>
               <div class="col-xl-4 col-12 mb-4">
-                <div class="card card-count___ticket" @click="loadTicket(2)">
+                <div class="card card-count___ticket" @click="filterTicket(2)">
                   <div class="card-body p-3">
                     <div class="row">
                       <div class="col-8">
@@ -109,346 +109,188 @@
             <div class="row">
               <div class="col-12">
                 <div class="card mb-4">
-                  <div class="card-header pb-0">
-                    <h6>Authors table</h6>
+                  <div class="card-header pb-0 mb-3">
+                    <div class="row">
+                      <div class="col-12 col-md-4 col-sm-4">
+                        <h6>Ticket list</h6>
+                        <div class="sub-title">รายการ Ticket</div>
+                      </div>
+
+                      <div class="col-12 col-md-8 col-sm-8">
+                        <!-- search -->
+                        <div
+                          class="px-5 ms-md-auto pe-md-3 d-flex justify-end mb-3"
+                        >
+                          <div class="input-group search___bar">
+                            <span class="input-group-text text-body"
+                              ><i class="fas fa-search" aria-hidden="true"></i
+                            ></span>
+                            <input
+                              v-model="table.search"
+                              type="text"
+                              class="form-control px-3"
+                              placeholder="Type here..."
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="card-body px-0 pt-0 pb-2">
-                    <div class="table-responsive p-0">
-                      <table class="table align-items-center mb-0">
-                        <thead>
-                          <tr>
-                            <th
-                              class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                    <div class="table-responsive px-2">
+                      <v-data-table
+                        ref="tickettable"
+                        class="table align-items-center mb-0"
+                        :headers="table.headers"
+                        :items="table.ticket"
+                        :search="table.search"
+                        :items-per-page="5"
+                        class="elevation-1"
+                      >
+                        <!-- DATE CREATED -->
+                        <template v-slot:item.create_date="{ item }">
+                          <span class="text-secondary text-xs font-weight-bold">
+                            {{
+                              moment
+                                .unix(item.createdAt)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+                        </template>
+
+                        <!-- INFORMER -->
+                        <template v-slot:item.mname="{ item }">
+                          <div class="d-flex px-2 py-1">
+                            <div>
+                              <v-avatar
+                                class="me-3 white--text"
+                                :color="profileColor"
+                                rounded
+                                size="30"
+                              >
+                                {{ item.mname.charAt(0) }}
+                              </v-avatar>
+                            </div>
+                            <div
+                              class="d-flex flex-column justify-content-center"
                             >
-                              Author
-                            </th>
-                            <th
-                              class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
-                            >
-                              Function
-                            </th>
-                            <th
-                              class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-                            >
-                              Status
-                            </th>
-                            <th
-                              class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-                            >
-                              Employed
-                            </th>
-                            <th class="text-secondary opacity-7"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-2.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user1"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">John Michael</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    john@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Manager
-                              </p>
+                              <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
                               <p class="text-xs text-secondary mb-0">
-                                Organization
+                                {{ item.mcode }}
                               </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-success"
-                                >Online</span
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- TYPE -->
+                        <template v-slot:item.catalog_name="{ item }">
+                          <p class="text-xs font-weight-bold mb-0">
+                            {{ item.catalog.TH }}
+                          </p>
+                          <p class="text-xs text-secondary mb-0">
+                            {{ item.catalog.EN }}
+                          </p>
+                        </template>
+
+                        <!-- STATUS -->
+                        <template v-slot:item.status="{ item, key }">
+                          <v-edit-dialog
+                            v-if="item.status.id === 1 || item.status.id === 2"
+                            @save="save(item.ticket_id, item.status.EN == item.status.EN ? item.status.id : 0, item.status.EN)"
+                            large
+                          >
+                            <v-chip :color="getColor(item.status.id)" small>
+                              {{ item.status.EN }}
+                            </v-chip>
+
+                            <template v-slot:input>
+                              <div class="mt-4">Change status</div>
+                              <select
+                                v-model="item.status.id"
+                                label="Edit"
+                                single-line
+                                counter
+                                autofocus
+                                name="selectStatus"
+                                class="form-control"
                               >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >23/04/18</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-3.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user2"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    alexa@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Programator
-                              </p>
-                              <p class="text-xs text-secondary mb-0">
-                                Developer
-                              </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-secondary"
-                                >Offline</span
-                              >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >11/01/19</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-4.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user3"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    laurent@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Executive
-                              </p>
-                              <p class="text-xs text-secondary mb-0">
-                                Projects
-                              </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-success"
-                                >Online</span
-                              >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >19/09/17</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-3.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user4"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">Michael Levi</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    michael@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Programator
-                              </p>
-                              <p class="text-xs text-secondary mb-0">
-                                Developer
-                              </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-success"
-                                >Online</span
-                              >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >24/12/08</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-2.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user5"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">Richard Gran</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    richard@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Manager
-                              </p>
-                              <p class="text-xs text-secondary mb-0">
-                                Executive
-                              </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-secondary"
-                                >Offline</span
-                              >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >04/10/21</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="d-flex px-2 py-1">
-                                <div>
-                                  <img
-                                    src="/assets/images/team-4.jpg"
-                                    class="avatar avatar-sm me-3"
-                                    alt="user6"
-                                  />
-                                </div>
-                                <div
-                                  class="d-flex flex-column justify-content-center"
-                                >
-                                  <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                                  <p class="text-xs text-secondary mb-0">
-                                    miriam@creative-tim.com
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <p class="text-xs font-weight-bold mb-0">
-                                Programtor
-                              </p>
-                              <p class="text-xs text-secondary mb-0">
-                                Developer
-                              </p>
-                            </td>
-                            <td class="align-middle text-center text-sm">
-                              <span class="badge badge-sm bg-gradient-secondary"
-                                >Offline</span
-                              >
-                            </td>
-                            <td class="align-middle text-center">
-                              <span
-                                class="text-secondary text-xs font-weight-bold"
-                                >14/09/20</span
-                              >
-                            </td>
-                            <td class="align-middle">
-                              <a
-                                href="javascript:;"
-                                class="text-secondary font-weight-bold text-xs"
-                                data-toggle="tooltip"
-                                data-original-title="Edit user"
-                              >
-                                Edit
-                              </a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                                <option value="1">Open ticket</option>
+                                <option value="2">Pending</option>
+                                <option value="3">Close</option>
+                                <option value="5">Reject</option>
+                              </select>
+                            </template>
+                          </v-edit-dialog>
+
+                          <v-chip
+                            v-else
+                            :color="getColor(item.status.id)"
+                            small
+                          >
+                            {{ item.status.EN }}
+                          </v-chip>
+                        </template>
+
+                        <!-- LAST UPDATE -->
+                        <template v-slot:item.approve_date="{ item }">
+                          <span
+                            v-if="item.approve_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.approved)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
+                            v-else
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            -
+                          </span>
+                        </template>
+
+                        <!-- VIEW -->
+                        <template v-slot:item.actions="{ item }">
+                          <v-btn
+                            small
+                            v-if="item.status.id === 1 || item.status.id === 2 || item.status.id === 3"
+                            @click=""
+                            outlined
+                            color="cyan"
+                            class="white--text actions-btn"
+                          >
+                            <v-icon> mdi-note-search </v-icon>
+                          </v-btn>
+                        </template>
+                      </v-data-table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <!-- end table -->
+
+            <!-- snackbar -->
+            <v-snackbar v-model="snackbar">
+              {{ text }}
+
+              <template v-slot:action="{ attrs }">
+                <v-btn
+                  color="pink"
+                  text
+                  v-bind="attrs"
+                  @click="snackbar = false"
+                >
+                  Close
+                </v-btn>
+              </template>
+            </v-snackbar>
+            <!-- end snackbar -->
           </div>
         </v-app>
       </div>
@@ -457,13 +299,55 @@
     <footer><%- include('../../partials/footer.ejs'); %></footer>
 
     <script type="text/javascript">
+      const baseUrl = "<%- baseUrl %>";
+      const role = "<%- role %>";
       const ticketData = JSON.parse(`<%-JSON.stringify(ticket[0])%>`);
 
       const app = new Vue({
         el: "#app",
         vuetify: new Vuetify(), // called vuetify
         data: {
-          ticket: ticketData.t_list,
+          profileColor: "orange",
+          snackbar: false,
+          text: null,
+          table: {
+            headers: [
+              {
+                text: "TICKETID",
+                align: "start",
+                value: "ticket_id",
+              },
+              {
+                text: "DATE CREATED",
+                value: "create_date",
+              },
+              {
+                text: "INFORMER",
+                value: "mname",
+              },
+              {
+                text: "TICKET TYPE",
+                value: "catalog_name",
+              },
+              {
+                text: "STATUS",
+                align: "center",
+                value: "status",
+              },
+              {
+                text: "LAST UPDATE",
+                align: "center",
+                value: "approve_date",
+              },
+              {
+                align: "center",
+                value: "actions",
+              },
+            ],
+
+            ticket: ticketData.t_list.sort((a, b) => b.ticket_id - a.ticket_id),
+            search: "",
+          },
         },
 
         watch: {},
@@ -471,10 +355,55 @@
         computed: {},
 
         methods: {
-          loadTicket(status) {
-            if (!status) return (this.ticket = ticketData.t_list);
+          async save(ticketId, select, statusName) {
+            if (confirm(`Change status to ${statusName}?`)) {
+              let result = await axios
+                .put(`${baseUrl}update/status`, {
+                  id: ticketId,
+                  status: select,
+                })
+                .then(function (response) {
+                  return response;
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
 
-            return (this.ticket = ticketData.t_list.filter(
+              if (result.status !== 200) {
+                this.snackbar = true;
+                this.text = result.data.message;
+                return;
+              }
+
+              this.snackbar = true;
+              this.text = result.data.message;
+              this.timeout = 1000;
+              setTimeout(() => window.location.reload(), 1500);
+            }
+          },
+
+          getColor(id) {
+            switch (id) {
+              case 1:
+                return "light-blue";
+                break;
+              case 2:
+                return "amber";
+                break;
+              case 3:
+                return "light-green";
+                break;
+              case 4:
+              case 5:
+                return "red lighten-2";
+                break;
+            }
+          },
+
+          filterTicket(status) {
+            if (!status) return (this.table.ticket = ticketData.t_list);
+
+            return (this.table.ticket = ticketData.t_list.filter(
               (el, index, item) => item[index].status.id === status,
             ));
           },

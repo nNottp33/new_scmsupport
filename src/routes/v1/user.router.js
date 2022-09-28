@@ -1,5 +1,6 @@
 const userRouter = require("express").Router();
 const userController = require("../../controllers/v1/user.controller");
+const globalController = require("../../controllers/v1/global.controller");
 // for file uploads
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -24,9 +25,6 @@ userRouter.get("/ticket/history", userController.HistoryList);
 userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
 userRouter.post("/ticket/history/search", userController.SearchHistory);
-userRouter.post("/add/comment", upload.any('fileComment'), userController.AddComment);
 
-// delete methods
-userRouter.delete("/delete/comment", userController.DeleteComment);
 
 module.exports = userRouter;
