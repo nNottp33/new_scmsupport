@@ -105,6 +105,36 @@
             </div>
             <!-- end card status -->
 
+            <div class="row">
+              <v-card class="d-flex justify-center flex-wrap" flat tile>
+                <v-chip
+                  @click="filtersCatalog(c.catalog_id)"
+                  class="ma-2"
+                  v-for="c of table.ticket"
+                  v-if="c.catalog.id == c.catalog.id"
+                  color="orange lighten-1"
+                  text-color="white"
+                  large
+                >
+                  <div
+                    class="d-flex white-text flex-column justify-content-center px-3"
+                  >
+                    <h6 style="color: #fff !important" class="mb-0 text-sm">
+                      {{ c.catalog.TH }}
+                    </h6>
+
+                    <p class="text-xs mb-0 text-center">
+                      ( {{ c.catalog.EN }} )
+                    </p>
+                  </div>
+
+                  <!-- <v-avatar right class="indigo darken-4">
+                    {{ c.total }}
+                  </v-avatar> -->
+                </v-chip>
+              </v-card>
+            </div>
+
             <!-- table -->
             <div class="row">
               <div class="col-12">
@@ -197,8 +227,10 @@
                         <template v-slot:item.status="{ item, key }">
                           <v-edit-dialog
                             v-if="item.status.id === 1 || item.status.id === 2"
-                            @save="save(item.ticket_id, item.status.EN == item.status.EN ? item.status.id : 0, item.status.EN)"
+                            @save="save(item.ticket_id, item.status.EN)"
+                            :return-value.sync="item.status.EN"
                             large
+                            persistent
                           >
                             <v-chip :color="getColor(item.status.id)" small>
                               {{ item.status.EN }}
@@ -207,7 +239,7 @@
                             <template v-slot:input>
                               <div class="mt-4">Change status</div>
                               <select
-                                v-model="item.status.id"
+                                v-model="item.status.EN"
                                 label="Edit"
                                 single-line
                                 counter
@@ -215,10 +247,10 @@
                                 name="selectStatus"
                                 class="form-control"
                               >
-                                <option value="1">Open ticket</option>
-                                <option value="2">Pending</option>
-                                <option value="3">Close</option>
-                                <option value="5">Reject</option>
+                                <option value="Open ticket">Open ticket</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Close">Close</option>
+                                <option value="Reject">Reject</option>
                               </select>
                             </template>
                           </v-edit-dialog>
@@ -355,12 +387,14 @@
         computed: {},
 
         methods: {
-          async save(ticketId, select, statusName) {
+          async save(ticketId, statusName) {
+            let status = this.getStatusId(statusName);
+
             if (confirm(`Change status to ${statusName}?`)) {
               let result = await axios
                 .put(`${baseUrl}update/status`, {
                   id: ticketId,
-                  status: select,
+                  status: status,
                 })
                 .then(function (response) {
                   return response;
@@ -379,6 +413,26 @@
               this.text = result.data.message;
               this.timeout = 1000;
               setTimeout(() => window.location.reload(), 1500);
+            }
+          },
+
+          getStatusId(statusName) {
+            switch (statusName) {
+              case "Open ticket":
+                return 1;
+                break;
+              case "Pending":
+                return 2;
+                break;
+              case "Close":
+                return 3;
+                break;
+              case "Cancel":
+                return 4;
+                break;
+              case "Reject":
+                return 5;
+                break;
             }
           },
 
@@ -405,6 +459,12 @@
 
             return (this.table.ticket = ticketData.t_list.filter(
               (el, index, item) => item[index].status.id === status,
+            ));
+          },
+
+          filtersCatalog(cId) {
+            return (this.table.ticket = this.table.ticket.filter(
+              (el, index, item) => item[index].catalog.id === cId,
             ));
           },
         },

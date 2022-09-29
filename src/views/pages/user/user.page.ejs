@@ -112,7 +112,7 @@
 
                         <!-- STATUS -->
                         <template v-slot:item.status="{ item }">
-                          <v-chip :color="getColor(item.status_id)">
+                          <v-chip small :color="getColor(item.status_id)">
                             {{ item.status }}
                           </v-chip>
                         </template>

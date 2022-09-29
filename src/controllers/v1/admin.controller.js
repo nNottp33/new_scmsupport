@@ -15,11 +15,14 @@ const AdminThread = async (req, res) => {
             .innerJoin('d_statuss', 'd_statuss.status_id', '=', 'f_ticket.status_id')
             .innerJoin('d_catalog', 'd_catalog.catalog_id', '=', 'f_ticket.catalog_id');
 
+        result[0].c_group = await conKnex('f_ticket').select(conKnex.raw(' d_catalog.* , SUM( CASE WHEN d_catalog.catalog_id = f_ticket.catalog_id THEN 1 ELSE 0 END) as total'))
+            .innerJoin('d_catalog', 'd_catalog.catalog_id', '=', 'f_ticket.catalog_id')
+            .groupBy('d_catalog.catalog_id');
+
         return res.status(httpStatus.OK).render("pages/admin/admin.page.ejs", {
             baseUrl: config.baseUrl,
             pages: {
                 name: "Ticket",
-                link: `/admin/support/scm?user=${branch}-${adminId}-${adminUname}`,
                 status: "active",
             },
             role: role,

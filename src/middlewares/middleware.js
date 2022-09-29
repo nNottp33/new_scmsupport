@@ -30,16 +30,6 @@ const CheckUser = async (req, res, next) => {
     }
   }
 
-  // check params query user
-  if (!mem_id || user) {
-    // if no params redirect to master url
-    if (config.node_env !== 'development') return res.status(httpStatus.NOT_FOUND).redirect('https://www.successmore1.com/')
-
-    return res.status(httpStatus.NOT_FOUND).render("pages/error");
-  }
-
-
-
   // fetch user with api for check
   let resultMember = await GetMember(mem_id);
 
