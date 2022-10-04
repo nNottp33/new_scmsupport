@@ -499,15 +499,11 @@
                 console.log(error);
               });
 
-            if (result.status === 200) {
+            if (result.status !== 200) {
               setTimeout(() => {
                 this.isLoading = false;
                 this.snackbar = true;
                 this.text = result.message;
-                setTimeout(() => {
-                  this.$refs.close.click();
-                  window.location.reload();
-                }, 1000);
               }, 2000);
               return;
             }
@@ -516,6 +512,10 @@
               this.isLoading = false;
               this.snackbar = true;
               this.text = result.message;
+              setTimeout(() => {
+                this.$refs.close.click();
+                window.location.reload();
+              }, 1000);
             }, 2000);
             return;
           },

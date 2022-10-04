@@ -110,8 +110,7 @@
                 <v-chip
                   @click="filtersCatalog(c.catalog_id)"
                   class="ma-2"
-                  v-for="c of table.ticket"
-                  v-if="c.catalog.id == c.catalog.id"
+                  v-for="c of ticketData.c_group"
                   color="orange lighten-1"
                   text-color="white"
                   large
@@ -120,17 +119,17 @@
                     class="d-flex white-text flex-column justify-content-center px-3"
                   >
                     <h6 style="color: #fff !important" class="mb-0 text-sm">
-                      {{ c.catalog.TH }}
+                      {{ c.catalog_nameTH }}
                     </h6>
 
                     <p class="text-xs mb-0 text-center">
-                      ( {{ c.catalog.EN }} )
+                      ( {{ c.catalog_nameEN }} )
                     </p>
                   </div>
 
-                  <!-- <v-avatar right class="indigo darken-4">
+                  <v-avatar right class="indigo darken-4">
                     {{ c.total }}
-                  </v-avatar> -->
+                  </v-avatar>
                 </v-chip>
               </v-card>
             </div>
@@ -291,7 +290,7 @@
                           <v-btn
                             small
                             v-if="item.status.id === 1 || item.status.id === 2 || item.status.id === 3"
-                            @click=""
+                            @click="window.location.href=`/admin/support/scm/thread/detail/${item.ticket_id}`"
                             outlined
                             color="cyan"
                             class="white--text actions-btn"
@@ -334,6 +333,8 @@
       const baseUrl = "<%- baseUrl %>";
       const role = "<%- role %>";
       const ticketData = JSON.parse(`<%-JSON.stringify(ticket[0])%>`);
+
+      const ticketStatus = [];
 
       const app = new Vue({
         el: "#app",
@@ -457,13 +458,23 @@
           filterTicket(status) {
             if (!status) return (this.table.ticket = ticketData.t_list);
 
-            return (this.table.ticket = ticketData.t_list.filter(
+            this.table.ticket = ticketData.t_list.filter(
               (el, index, item) => item[index].status.id === status,
-            ));
+            );
+
+            this.ticketStatus = this.table.ticket;
+
+            return this.table.ticket && this.ticketStatus;
           },
 
           filtersCatalog(cId) {
-            return (this.table.ticket = this.table.ticket.filter(
+            if (!this.ticketStatus) {
+              return (this.table.ticket = ticketData.t_list.filter(
+                (el, index, item) => item[index].catalog.id === cId,
+              ));
+            }
+
+            return (this.table.ticket = this.ticketStatus.filter(
               (el, index, item) => item[index].catalog.id === cId,
             ));
           },

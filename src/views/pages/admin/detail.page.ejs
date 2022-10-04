@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../partials/head.ejs'); %>
+  </head>
+  <body class="g-sidenav-show bg-gray-100">
+    <%- include('../../partials/admin/sidebar.ejs'); %>
+    <main
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
+    >
+      <%- include('../../partials/navbar.ejs'); %>
+
+      <div v-cloak id="app">
+        <v-app>
+          <div class="container-fluid py-4">
+            <!-- content -->
+            <div class="content">
+              <!-- back button -->
+              <div
+                style="
+                  box-shadow: rgb(0 0 0 / 5%) 0px 2px 60px 0px;
+                  border-radius: 20px;
+                "
+                class="container blur z-index-sticky"
+              >
+                <div class="row">
+                  <div class="col-1 col-md-1">
+                    <a href="javascript:history.back()">
+                      <v-icon> mdi-arrow-left </v-icon>
+                    </a>
+                  </div>
+                  <div class="col-11 col-md-11">
+                    <p class="text-sm font-weight-bold mb-0">
+                      <%- forum[0].catalog_nameTH %>
+                    </p>
+                    <p class="text-sm text-secondary mb-0">
+                      <%- forum[0].catalog_nameEN %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <!-- end back button -->
+            </div>
+            <!-- end content -->
+          </div>
+        </v-app>
+      </div>
+    </main>
+
+    <footer><%- include('../../partials/footer.ejs'); %></footer>
+
+    <script type="text/javascript">
+      const baseUrl = "<%- baseUrl %>";
+      const role = "<%- role %>";
+
+      const app = new Vue({
+        el: "#app",
+        vuetify: new Vuetify(), // called vuetify
+        data: {},
+
+        watch: {},
+
+        computed: {},
+
+        methods: {},
+
+        created() {},
+
+        mounted() {},
+
+        updated() {},
+      });
+    </script>
+  </body>
+</html>

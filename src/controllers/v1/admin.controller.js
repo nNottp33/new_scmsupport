@@ -38,6 +38,43 @@ const AdminThread = async (req, res) => {
     }
 }
 
+const DetailThread = async (req, res) => {
+    let { role, adminUname, adminId, branch } = req.session.sessionsData;
+    let { ticketid } = req.params
+
+    try {
+
+        let resultTicketDetails = await conKnex.select('f_ticket.mname', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'f_ticket_detail.*', 'f_ticket.status_id', 'f_ticket.create_date',
+            conKnex.raw('JSON_ARRAYAGG( JSON_OBJECT( "mid", t_comment.mid, "txt_msg", t_comment.txt_msg, "date_mes", t_comment.date_mes, "ticket_id", t_comment.ticket_id, "u_id", t_comment.u_id, "attach_file", t_comment.attach_file, "type", t_comment.type, "u_name", t_comment.u_name, "role", CASE WHEN f_ticket.mname = t_comment.u_name THEN "user" ELSE "admin" END)) as comment'))
+            .from('f_ticket_detail')
+            .innerJoin('f_ticket', 'f_ticket.ticket_id', 'f_ticket_detail.ticket_id')
+            .leftJoin('t_comment', 't_comment.ticket_id', 'f_ticket_detail.ticket_id')
+            .crossJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+            .where('f_ticket_detail.ticket_id', '=', ticketid)
+            .groupBy('f_ticket_detail.ticket_id');
+
+        return res.status(httpStatus.OK).render("pages/admin/detail.page.ejs", {
+            baseUrl: config.baseUrl,
+            pages: {
+                name: `Ticket`,
+                status: "active",
+            },
+            role: role,
+            admin: adminUname,
+            id: adminId,
+            branch: branch,
+            forum: resultTicketDetails,
+        });
+
+    } catch (err) {
+        logger.error(chalk.red(err.code));
+        await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
+        return res.status(httpStatus.NOT_FOUND).render("pages/error");
+    }
+
+}
+
 module.exports = {
-    AdminThread
+    AdminThread,
+    DetailThread
 }
