@@ -3,27 +3,24 @@
   <head>
     <%- include('../../partials/head.ejs'); %>
   </head>
+  <body class="g-sidenav-show bg-gray-100">
+    <%- include('../../partials/admin/sidebar.ejs'); %>
+    <main
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
+    >
+      <%- include('../../partials/navbar.ejs'); %>
 
-  <body>
-    <!-- navbar -->
-    <%- include('../../partials/navbar.ejs'); %>
-
-    <div v-cloak id="app">
-      <!-- For render vuetify  -->
-      <v-app>
-        <!-- content -->
-        <main
-          class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content"
-        >
-          <div class="container-fluid py-2">
+      <div v-cloak id="app">
+        <v-app>
+          <div class="container-fluid py-4">
             <div class="row">
               <div class="col-12">
                 <div class="card mb-4">
                   <div class="card-header pb-3">
                     <div class="row">
                       <div class="col-12 col-md-4">
-                        <h6>History ticket</h6>
-                        <div class="sub-title">ประวัติการสร้าง Ticket</div>
+                        <h6>Report ticket</h6>
+                        <div class="sub-title">รายงานปัญหา</div>
                       </div>
                     </div>
 
@@ -31,7 +28,7 @@
                       <form @submit.prevent="onSearch">
                         <div class="row">
                           <!-- date picket startdate -->
-                          <div class="col-md-3 col-12">
+                          <div class="col-xl-2 col-12">
                             <v-dialog
                               ref="dialogStart"
                               v-model="mStart"
@@ -71,7 +68,7 @@
                           <!-- date picker end date -->
 
                           <!-- date picker enddate -->
-                          <div class="col-md-3 col-12">
+                          <div class="col-xl-2 col-12">
                             <v-dialog
                               ref="dialogEnd"
                               v-model="mEnd"
@@ -111,14 +108,14 @@
                           <!-- end date picker enddate -->
 
                           <!-- select status -->
-                          <div class="col-md-3 col-12">
+                          <div class="col-xl-2 col-12">
                             <v-select
                               class="pt-0"
                               v-model="selectedStatus"
                               :items="defaultStatus"
                               item-text="text"
                               item-value="value"
-                              label="Filters by status"
+                              label="Filters by Group"
                               multiple
                               chips
                             >
@@ -141,13 +138,42 @@
                           </div>
                           <!-- end select status -->
 
+                          <!-- select user -->
+                          <div class="col-xl-2 col-12">
+                            <v-select
+                              class="pt-0"
+                              v-model="selectedStatus"
+                              :items="defaultStatus"
+                              item-text="text"
+                              item-value="value"
+                              label="Filters by User"
+                              multiple
+                              chips
+                            >
+                              <template v-slot:selection="{ item, index }">
+                                <v-chip
+                                  color="orange"
+                                  class="text-white"
+                                  v-if="index === 0"
+                                >
+                                  <span>{{ item.text }}</span>
+                                </v-chip>
+                                <span
+                                  v-if="index === 1"
+                                  class="grey--text text-caption"
+                                >
+                                  (+{{ selectedStatus.length - 1 }} others)
+                                </span>
+                              </template>
+                            </v-select>
+                          </div>
+                          <!-- end select user -->
+
                           <!-- btn search -->
-                          <div
-                            class="col-md-3 col-12 m-auto justify-content-center text-center"
-                          >
+                          <div class="col-xl-4 col-12">
                             <button
                               type="submit"
-                              class="btn bg-gradient-primary btn-search__history"
+                              class="btn bg-gradient-primary btn-search__report"
                             >
                               <i
                                 class="fas fa-search text-white mr-2"
@@ -168,12 +194,12 @@
                   <div class="card-body px-3 pt-0 pb-2">
                     <!-- search -->
                     <div
-                      class="search__bar ms-md-auto pe-md-3 d-flex align-items-center mb-3"
+                      class="px-5 ms-md-auto pe-md-3 d-flex justify-end mb-3"
                     >
-                      <div class="input-group">
-                        <span class="input-group-text text-body">
-                          <i class="fas fa-search" aria-hidden="true"></i>
-                        </span>
+                      <div class="input-group search___bar">
+                        <span class="input-group-text text-body"
+                          ><i class="fas fa-search" aria-hidden="true"></i
+                        ></span>
                         <input
                           v-model="table.search"
                           type="text"
@@ -270,6 +296,18 @@
                           >
 
                           <span
+                            v-else-if="item.close_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.close_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
                             v-else
                             class="text-secondary text-xs font-weight-bold"
                           >
@@ -281,7 +319,7 @@
                         <template v-slot:item.actions="{ item }">
                           <v-btn
                             small
-                            @click="window.location.href=`/user/support/scm/thread/detail/${item.ticket_id}`"
+                            @click="window.location.href=`/admin/support/scm/thread/detail/${item.ticket_id}`"
                             outlined
                             color="cyan"
                             class="white--text actions-btn"
@@ -297,18 +335,17 @@
               </div>
             </div>
           </div>
-        </main>
-      </v-app>
-    </div>
+        </v-app>
+      </div>
+    </main>
 
-    <!-- new ticket modal end -->
-    <%- include('../../partials/footer.ejs'); %>
+    <footer><%- include('../../partials/footer.ejs'); %></footer>
 
     <script type="text/javascript">
       const baseUrl = "<%- baseUrl %>";
       const role = "<%- role %>";
 
-      let app = new Vue({
+      const app = new Vue({
         el: "#app",
         vuetify: new Vuetify(), // called vuetify
         data: {
@@ -324,28 +361,6 @@
           mEnd: false,
           profileColor: role == "user" ? "orange" : "purple",
           selectedStatus: null,
-          defaultStatus: [
-            {
-              value: 1,
-              text: "Open ticket",
-            },
-            {
-              value: 2,
-              text: "Pending",
-            },
-            {
-              value: 3,
-              text: "Close",
-            },
-            {
-              value: 4,
-              text: "Cancel",
-            },
-            {
-              value: 5,
-              text: "Reject",
-            },
-          ],
           table: {
             headers: [
               {
@@ -390,45 +405,13 @@
 
         computed: {},
 
-        methods: {
-          async loadTicket() {
-            let config = {
-              method: "POST",
-              url: `${baseUrl}user/ticket/list`,
-              data: {
-                status: this.defaultStatus.map(({ key, value }) => value),
-              },
-            };
+        methods: {},
 
-            await axios(config)
-              .then((response) => (this.table.items = response.data.data))
-              .catch((error) => console.log(error));
-          },
-
-          async onSearch() {
-            let config = {
-              method: "POST",
-              url: `${baseUrl}user//ticket/history/search`,
-              data: {
-                status: this.selectedStatus
-                  ? this.selectedStatus
-                  : this.defaultStatus.map(({ key, value }) => value),
-                dateStart: this.dateStart,
-                dateEnd: this.dateEnd,
-              },
-            };
-
-            await axios(config)
-              .then((response) => (this.table.items = response.data.data))
-              .catch((error) => console.log(error));
-          },
-        },
-
-        async created() {
-          await this.loadTicket();
-        },
+        created() {},
 
         mounted() {},
+
+        updated() {},
       });
     </script>
   </body>

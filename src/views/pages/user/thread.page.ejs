@@ -12,7 +12,7 @@
       <!-- For rendev vuetify  -->
       <v-app>
         <div
-          style="width: 100%; max-width: 800px"
+          style="width: 100%; max-width: 1000px"
           class="mt-0 m-auto justify-content-center"
         >
           <!-- content -->
@@ -49,10 +49,9 @@
                 <% if (forum[0].attach_file) { %>
                 <div class="position-relative">
                   <a class="d-block blur-shadow-image">
-                    <img
+                    <embed
+                      class="img-fluid border-radius-lg thread-file"
                       src="/public/files_upload/<%= forum[0].attach_file %>"
-                      alt="img-blur-shadow"
-                      class="img-fluid border-radius-lg"
                     />
                   </a>
                 </div>
@@ -94,7 +93,6 @@
                                     >
                                       <input
                                         @change="onFileChange($event)"
-                                        accept="image/*"
                                         type="file"
                                         name="fileComment"
                                         id="file-input"
@@ -144,7 +142,10 @@
                                   class="d-flex flex-row px-10 py-2"
                                 >
                                   <div id="previewImage">
-                                    <img :src="imageUrl" />
+                                    <embed
+                                      class="thread-file"
+                                      :src="imageUrl"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -191,7 +192,7 @@
                                   <a
                                     v-if="item.u_id === uId"
                                     href="#"
-                                    @click="deleteComment(item.mid)"
+                                    @click="deleteComment(item.mid, item.attach_file)"
                                     class="pa-1"
                                   >
                                     <v-icon class="icon-manage-comment">
@@ -205,11 +206,31 @@
                                 </p>
 
                                 <div v-if="item.attach_file">
-                                  <img
-                                    @click="fullImage(item.attach_file)"
-                                    width="130"
-                                    :src="setImgUrl(item.attach_file)"
-                                  />
+                                  <div
+                                    class="d-flex flex-row py-3 cursor-pointer"
+                                  >
+                                    <embed
+                                      @click="fullImage(item.attach_file)"
+                                      width="200"
+                                      :src="setImgUrl(item.attach_file)"
+                                    />
+                                  </div>
+
+                                  <div
+                                    v-if="item.checkType"
+                                    class="d-flex flex-row py-1"
+                                  >
+                                    <a
+                                      class="download-btn"
+                                      download
+                                      :href="setImgUrl(item.attach_file)"
+                                    >
+                                      <v-icon class="mr-1" small>
+                                        mdi-tray-arrow-down
+                                      </v-icon>
+                                      Download
+                                    </a>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -382,14 +403,17 @@
             // when send comment reset input comment
             this.comment = null;
             this.imageUrl = null;
+            this.fileComment = null;
           },
 
-          async deleteComment(id) {
+          async deleteComment(id, file) {
+            console.log(file);
             if (confirm("Delete comment?")) {
               let result = await axios
                 .delete(`${baseUrl}delete/comment`, {
                   data: {
                     comment: id,
+                    file: file,
                   },
                 })
                 .then(function (response) {
@@ -414,9 +438,39 @@
               return;
             }
           },
+
+          checkType() {
+            if (this.itemComment.length > 0) {
+              for (let i = 0; i < this.itemComment.length; i++) {
+                if (this.itemComment[i].attach_file) {
+                  this.itemComment[i].checkType =
+                    this.itemComment[i].attach_file.split(".");
+
+                  switch (
+                    this.itemComment[i].checkType[
+                      this.itemComment[i].checkType.length - 1
+                    ]
+                  ) {
+                    case "png":
+                    case "jpeg":
+                    case "jpg":
+                    case "gif":
+                      this.itemComment[i].checkType = false;
+                      break;
+                    default:
+                      this.itemComment[i].checkType = true;
+                      break;
+                  }
+                }
+              }
+            }
+          },
         },
 
         async created() {
+          // check file type
+          this.checkType();
+
           // create namespace and connect to the server io
           this.socket = io("/thread");
 
@@ -439,6 +493,22 @@
 
           // get reply from server socket
           this.socket.on(`comment`, (msg) => {
+            if (msg.attach_file !== null) {
+              msg.checkType = msg.attach_file.split(".");
+
+              switch (msg.checkType[msg.checkType.length - 1]) {
+                case "png":
+                case "jpeg":
+                case "jpg":
+                case "gif":
+                  msg.checkType = false;
+                  break;
+                default:
+                  msg.checkType = true;
+                  break;
+              }
+            }
+
             this.itemComment.push(msg);
           });
         },

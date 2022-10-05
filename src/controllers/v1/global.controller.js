@@ -1,6 +1,9 @@
 const httpStatus = require("http-status");
 const moment = require("moment-timezone");
 const chalk = require("chalk");
+const fs = require("fs");
+const path = require("path");
+
 const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
@@ -43,11 +46,17 @@ const ChangeStatus = async (req, res) => {
     let { id, status } = req.body;
 
     try {
-        await conKnex('f_ticket').update('status_id', status).where('ticket_id', id)
 
-        return res.status(httpStatus.OK).send({
-            message: "Update status successfully"
-        })
+        await conKnex('f_ticket').update('status_id', status).where('ticket_id', id)
+            .then(async () => {
+                if (status === 2) await conKnex('f_ticket').update('approve_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
+
+                if (status === 3) await conKnex('f_ticket').update('close_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
+
+                return res.status(httpStatus.OK).send({
+                    message: "Update status successfully"
+                })
+            })
 
     } catch (e) {
         logger.error(chalk.bold.red(e));
@@ -59,12 +68,17 @@ const ChangeStatus = async (req, res) => {
 }
 
 const DeleteComment = async (req, res) => {
-    let { comment } = req.body;
+    let { comment, file } = req.body;
 
     try {
         await conKnex('t_comment')
             .where('mid', comment)
             .del()
+            .then(() => {
+                if (file) {
+                    fs.unlinkSync(path.join(__dirname, `../../../public/files_upload/${file}`))
+                }
+            });
 
         return res.status(httpStatus.OK).send({
             message: 'Comment deleted!'

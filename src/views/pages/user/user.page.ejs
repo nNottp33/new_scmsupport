@@ -132,6 +132,18 @@
                           >
 
                           <span
+                            v-else-if="item.close_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.close_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
                             v-else
                             class="text-secondary text-xs font-weight-bold"
                           >
@@ -279,7 +291,7 @@
                       <div class="sub-title">แนบไฟล์เพิ่มเติม</div>
                       <div class="mt-1 mb-3">
                         <input
-                          accept="image/*"
+                          accept="*"
                           name="fileUpload"
                           @change="uploadFile($event)"
                           ref="file"

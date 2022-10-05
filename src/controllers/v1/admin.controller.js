@@ -74,7 +74,25 @@ const DetailThread = async (req, res) => {
 
 }
 
+
+const ReportPage = async (req, res) => {
+    let { role, adminUname, adminId, branch } = req.session.sessionsData;
+
+    return res.status(httpStatus.OK).render("pages/admin/report.page.ejs", {
+        baseUrl: config.baseUrl,
+        pages: {
+            name: `Report`,
+            status: "active",
+        },
+        role: role,
+        admin: adminUname,
+        id: adminId,
+        branch: branch,
+    });
+}
+
 module.exports = {
     AdminThread,
-    DetailThread
+    DetailThread,
+    ReportPage
 }

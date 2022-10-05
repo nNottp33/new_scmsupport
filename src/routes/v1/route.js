@@ -12,8 +12,7 @@ const storage = multer.diskStorage({
         cb(null, 'public/files_upload')
     },
     filename: function (req, file, cb) {
-        let fileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
-
+        let fileName = Buffer.from(`${Date.now()}-${file.originalname}`, 'latin1').toString('utf8');
         cb(null, fileName)
     }
 })
@@ -23,6 +22,7 @@ const upload = multer({ storage: storage })
 router.use("/user", filters.AuthUser, userRouter);
 router.use("/admin", filters.AuthAdmin, adminRouter);
 
+// global routes
 // post methods
 router.post("/add/comment", upload.any('fileComment'), globalController.AddComment);
 

@@ -246,10 +246,6 @@ textarea {
     background: #9c27b0 !important;
 }
 
-#previewImage img {
-    max-width: 150px;
-}
-
 .comment-text {
     inline-size: 380px;
     overflow-wrap: break-word;
@@ -430,4 +426,18 @@ textarea {
     #sidenav-main {
         z-index: 0 !important;
     }
+}
+
+.thread-file {
+    max-width: 100%;
+}
+
+.download-btn {
+    color: rgba(0, 0, 0, .54);
+    font-size: 11px !important;
+}
+
+.btn-search__report {
+    max-width: 300px;
+    width: 100%;
 }
