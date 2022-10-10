@@ -7,6 +7,6 @@ adminRouter.get("/support/scm/thread/detail/:ticketid", adminController.DetailTh
 adminRouter.get("/report", adminController.ReportPage);
 
 // methods POST
-
+adminRouter.post("/report/result", adminController.GetReport);
 
 module.exports = adminRouter;

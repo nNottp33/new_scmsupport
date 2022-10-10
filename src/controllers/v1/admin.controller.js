@@ -78,21 +78,59 @@ const DetailThread = async (req, res) => {
 const ReportPage = async (req, res) => {
     let { role, adminUname, adminId, branch } = req.session.sessionsData;
 
-    return res.status(httpStatus.OK).render("pages/admin/report.page.ejs", {
-        baseUrl: config.baseUrl,
-        pages: {
-            name: `Report`,
-            status: "active",
-        },
-        role: role,
-        admin: adminUname,
-        id: adminId,
-        branch: branch,
-    });
+    try {
+
+        let resultUserTicket = await conKnex('f_ticket').distinct('mcode', 'mname');
+        let resultCatalog = await conKnex('d_catalog').select();
+
+        return res.status(httpStatus.OK).render("pages/admin/report.page.ejs", {
+            baseUrl: config.baseUrl,
+            pages: {
+                name: `Report`,
+                status: "active",
+            },
+            role: role,
+            admin: adminUname,
+            id: adminId,
+            branch: branch,
+            users: resultUserTicket,
+            catalogs: resultCatalog,
+        });
+
+    } catch (err) {
+        logger.error(chalk.red(err));
+        return res.status(httpStatus.NOT_FOUND).render("pages/error");
+    }
+}
+
+
+const GetReport = async (req, res) => {
+    let { dateStart, dateEnd, selectUsers, selectCatalog } = req.body;
+
+
+    try {
+
+        let resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
+            .from('f_ticket')
+            .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+            .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
+            .where('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
+            .andWhere('f_ticket.close_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
+            .orderBy('f_ticket.create_date', 'DESC');
+
+        console.log(resultReport);
+
+        return res.status(httpStatus.OK).send(resultReport);
+
+    } catch (err) {
+        logger.error(chalk.red(err));
+        return res.status(httpStatus.NOT_FOUND).render("pages/error");
+    }
 }
 
 module.exports = {
     AdminThread,
     DetailThread,
-    ReportPage
+    ReportPage,
+    GetReport
 }

@@ -31,14 +31,14 @@
                           <div class="col-xl-2 col-12">
                             <v-dialog
                               ref="dialogStart"
-                              v-model="mStart"
-                              :return-value.sync="dateStart"
+                              v-model="formSearch.mStart"
+                              :return-value.sync="formSearch.dateStart"
                               persistent
                               width="290px"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="dateStart"
+                                  v-model="formSearch.dateStart"
                                   label="Start date"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -46,19 +46,22 @@
                                   v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker v-model="dateStart" scrollable>
+                              <v-date-picker
+                                v-model="formSearch.dateStart"
+                                scrollable
+                              >
                                 <v-spacer></v-spacer>
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="mStart = false"
+                                  @click="formSearch.mStart = false"
                                 >
                                   Cancel
                                 </v-btn>
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="$refs.dialogStart.save(dateStart)"
+                                  @click="$refs.dialogStart.save(formSearch.dateStart)"
                                 >
                                   OK
                                 </v-btn>
@@ -71,14 +74,14 @@
                           <div class="col-xl-2 col-12">
                             <v-dialog
                               ref="dialogEnd"
-                              v-model="mEnd"
-                              :return-value.sync="dateEnd"
+                              v-model="formSearch.mEnd"
+                              :return-value.sync="formSearch.dateEnd"
                               persistent
                               width="290px"
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="dateEnd"
+                                  v-model="formSearch.dateEnd"
                                   label="End date"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -86,19 +89,22 @@
                                   v-on="on"
                                 ></v-text-field>
                               </template>
-                              <v-date-picker v-model="dateEnd" scrollable>
+                              <v-date-picker
+                                v-model="formSearch.dateEnd"
+                                scrollable
+                              >
                                 <v-spacer></v-spacer>
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="mEnd = false"
+                                  @click="formSearch.mEnd = false"
                                 >
                                   Cancel
                                 </v-btn>
                                 <v-btn
                                   text
                                   color="primary"
-                                  @click="$refs.dialogEnd.save(dateEnd)"
+                                  @click="$refs.dialogEnd.save(formSearch.dateEnd)"
                                 >
                                   OK
                                 </v-btn>
@@ -107,14 +113,14 @@
                           </div>
                           <!-- end date picker enddate -->
 
-                          <!-- select status -->
-                          <div class="col-xl-2 col-12">
+                          <!-- select catalog -->
+                          <div class="col-xl-3 col-12">
                             <v-select
-                              class="pt-0"
-                              v-model="selectedStatus"
-                              :items="defaultStatus"
-                              item-text="text"
-                              item-value="value"
+                              class="pt-0 pa-5"
+                              v-model="formSearch.selectCatalog"
+                              :items="catalogs"
+                              item-text="catalog_nameTH"
+                              item-value="catalog_id"
                               label="Filters by Group"
                               multiple
                               chips
@@ -125,27 +131,28 @@
                                   class="text-white"
                                   v-if="index === 0"
                                 >
-                                  <span>{{ item.text }}</span>
+                                  <span>{{ item.catalog_nameTH }}</span>
                                 </v-chip>
                                 <span
                                   v-if="index === 1"
                                   class="grey--text text-caption"
                                 >
-                                  (+{{ selectedStatus.length - 1 }} others)
+                                  (+{{ formSearch.selectCatalog.length - 1 }}
+                                  others)
                                 </span>
                               </template>
                             </v-select>
                           </div>
-                          <!-- end select status -->
+                          <!-- end select catalog -->
 
                           <!-- select user -->
-                          <div class="col-xl-2 col-12">
+                          <div class="col-xl-3 col-12">
                             <v-select
-                              class="pt-0"
-                              v-model="selectedStatus"
-                              :items="defaultStatus"
-                              item-text="text"
-                              item-value="value"
+                              class="pt-0 pa-5"
+                              v-model="formSearch.selectUsers"
+                              :items="users"
+                              item-text="mname"
+                              item-value="mcode"
                               label="Filters by User"
                               multiple
                               chips
@@ -156,13 +163,14 @@
                                   class="text-white"
                                   v-if="index === 0"
                                 >
-                                  <span>{{ item.text }}</span>
+                                  <span>{{ item.mname }}</span>
                                 </v-chip>
                                 <span
                                   v-if="index === 1"
                                   class="grey--text text-caption"
                                 >
-                                  (+{{ selectedStatus.length - 1 }} others)
+                                  (+{{ formSearch.selectUsers.length - 1 }}
+                                  others)
                                 </span>
                               </template>
                             </v-select>
@@ -170,7 +178,7 @@
                           <!-- end select user -->
 
                           <!-- btn search -->
-                          <div class="col-xl-4 col-12">
+                          <div class="col-xl-2 col-12">
                             <button
                               type="submit"
                               class="btn bg-gradient-primary btn-search__report"
@@ -183,7 +191,6 @@
                               Search
                             </button>
                           </div>
-
                           <!-- end btn search -->
                         </div>
                       </form>
@@ -345,22 +352,29 @@
       const baseUrl = "<%- baseUrl %>";
       const role = "<%- role %>";
 
+      const catalogs = JSON.parse(`<%-JSON.stringify(catalogs)%>`);
+      const users = JSON.parse(`<%-JSON.stringify(users)%>`);
+
       const app = new Vue({
         el: "#app",
         vuetify: new Vuetify(), // called vuetify
         data: {
-          dateStart: new Date(
-            Date.now() - new Date().getTimezoneOffset() * 60000,
-          )
-            .toISOString()
-            .substr(0, 10),
-          dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-            .toISOString()
-            .substr(0, 10),
-          mStart: false,
-          mEnd: false,
-          profileColor: role == "user" ? "orange" : "purple",
-          selectedStatus: null,
+          formSearch: {
+            dateStart: new Date(
+              Date.now() - new Date().getTimezoneOffset() * 60000,
+            )
+              .toISOString()
+              .substr(0, 10),
+            dateEnd: new Date(
+              Date.now() - new Date().getTimezoneOffset() * 60000,
+            )
+              .toISOString()
+              .substr(0, 10),
+            mStart: false,
+            mEnd: false,
+            selectUsers: null,
+            selectCatalog: null,
+          },
           table: {
             headers: [
               {
@@ -405,7 +419,28 @@
 
         computed: {},
 
-        methods: {},
+        methods: {
+          async onSearch() {
+            let result = await axios
+              .post(`${baseUrl}admin/report/result`, this.formSearch)
+              .then(function (response) {
+                return response;
+              })
+              .catch(function (error) {
+                return error.response;
+              });
+
+            if (result.status !== 200) {
+              this.snackbar = true;
+              this.text = result.data.message;
+              return;
+            }
+
+            console.log(result.data);
+
+            this.table.items.push(result.data);
+          },
+        },
 
         created() {},
 
