@@ -243,7 +243,7 @@
                             <div>
                               <v-avatar
                                 class="me-3 white--text"
-                                :color="profileColor"
+                                color="orange"
                                 rounded
                                 size="30"
                               >
@@ -372,8 +372,8 @@
               .substr(0, 10),
             mStart: false,
             mEnd: false,
-            selectUsers: null,
-            selectCatalog: null,
+            selectUsers: [],
+            selectCatalog: [],
           },
           table: {
             headers: [
@@ -436,9 +436,7 @@
               return;
             }
 
-            console.log(result.data);
-
-            this.table.items.push(result.data);
+            return (this.table.items = result.data);
           },
         },
 

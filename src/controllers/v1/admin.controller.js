@@ -4,6 +4,7 @@ const chalk = require("chalk");
 const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
+const { select } = require("../../configs/db");
 
 const AdminThread = async (req, res) => {
     let { role, adminId, adminUname, branch } = req.session.sessionsData;
@@ -106,19 +107,62 @@ const ReportPage = async (req, res) => {
 
 const GetReport = async (req, res) => {
     let { dateStart, dateEnd, selectUsers, selectCatalog } = req.body;
-
+    let resultReport = [];
 
     try {
 
-        let resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
+        if (selectCatalog.length === 0 && selectUsers.length === 0) {
+
+            resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
+                .from('f_ticket')
+                .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+                .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
+                .where('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
+                .andWhere('f_ticket.close_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
+                .orderBy('f_ticket.create_date', 'DESC');
+
+            return res.status(httpStatus.OK).send(resultReport);
+        }
+
+
+        if (selectUsers.length > 0 && selectCatalog.length === 0) {
+
+            resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
+                .from('f_ticket')
+                .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+                .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
+                .whereIn('f_ticket.mcode', selectUsers)
+                .andWhere('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
+                .andWhere('f_ticket.close_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
+                .orderBy('f_ticket.create_date', 'DESC');
+
+            return res.status(httpStatus.OK).send(resultReport);
+
+        }
+
+        if (selectUsers.length === 0 && selectCatalog.length > 0) {
+
+            resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
+                .from('f_ticket')
+                .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+                .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
+                .whereIn('f_ticket.catalog_id', selectCatalog)
+                .andWhere('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
+                .andWhere('f_ticket.close_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
+                .orderBy('f_ticket.create_date', 'DESC');
+
+            return res.status(httpStatus.OK).send(resultReport);
+        }
+
+        resultReport = await conKnex.select('f_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'd_statuss.status_descEN as status')
             .from('f_ticket')
             .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
             .innerJoin('d_statuss', 'd_statuss.status_id', 'f_ticket.status_id')
-            .where('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
+            .whereIn('f_ticket.catalog_id', selectCatalog)
+            .orWhereIn('f_ticket.mcode', selectUsers)
+            .andWhere('f_ticket.create_date', '>=', moment.tz(dateStart, "Asia/Bangkok").unix())
             .andWhere('f_ticket.close_date', '<=', moment.tz(dateEnd, "Asia/Bangkok").unix())
             .orderBy('f_ticket.create_date', 'DESC');
-
-        console.log(resultReport);
 
         return res.status(httpStatus.OK).send(resultReport);
 
