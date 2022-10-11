@@ -1,4 +1,5 @@
 const { GetMember } = require("../services/service");
+const { Decrypt } = require("../services/encryption.service");
 const httpStatus = require("http-status");
 const logger = require("../configs/logger");
 const config = require("../configs/config");
@@ -8,12 +9,17 @@ const CheckUser = async (req, res, next) => {
 
   let { mem_id, user } = req.query;
   // split data from query params
-  let resultAdminData = user ? user.split("-") : 'unknow';
+
+
 
   // check session
   if (req.session.sessionsData) return next();
 
   if (user) {
+
+    user = Decrypt(user);
+    let resultAdminData = user ? user.split("-") : 'unknow';
+
     if (resultAdminData.length === 3) {
       // set session data admin
       req.session.sessionsData = {
@@ -31,7 +37,7 @@ const CheckUser = async (req, res, next) => {
   }
 
   // fetch user with api for check
-  let resultMember = await GetMember(mem_id);
+  let resultMember = await GetMember(Decrypt(mem_id));
 
   // if user not found
   if (!resultMember.status) {

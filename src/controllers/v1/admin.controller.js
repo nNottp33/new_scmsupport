@@ -5,6 +5,7 @@ const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
 const { select } = require("../../configs/db");
+const { Encrypt, Decrypt } = require("../../services/encryption.service");
 
 const AdminThread = async (req, res) => {
     let { role, adminId, adminUname, branch } = req.session.sessionsData;
@@ -25,6 +26,7 @@ const AdminThread = async (req, res) => {
             pages: {
                 name: "Ticket",
                 status: "active",
+                user: Encrypt(`${branch}-${adminId}-${adminUname}`)
             },
             role: role,
             admin: adminUname,
@@ -59,6 +61,7 @@ const DetailThread = async (req, res) => {
             pages: {
                 name: `Ticket`,
                 status: "active",
+                user: Encrypt(`${branch}-${adminId}-${adminUname}`)
             },
             role: role,
             admin: adminUname,
@@ -89,6 +92,7 @@ const ReportPage = async (req, res) => {
             pages: {
                 name: `Report`,
                 status: "active",
+                user: Encrypt(`${branch}-${adminId}-${adminUname}`)
             },
             role: role,
             admin: adminUname,
