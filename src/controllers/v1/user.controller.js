@@ -5,6 +5,7 @@ const chalk = require("chalk");
 const config = require("../../configs/config");
 const conKnex = require("../../configs/db");
 const logger = require("../../configs/logger");
+const { Encrypt, Decrypt } = require("../../services/encryption.service");
 
 const UserThread = async (req, res) => {
   let { email, member_id, member_name, role } = req.session.sessionsData;
@@ -20,6 +21,7 @@ const UserThread = async (req, res) => {
       memEmail: email,
       role: role,
       category: resultCategory,
+      user: Encrypt(member_id)
     });
   } catch (err) {
     logger.error(chalk.red(err));
@@ -77,6 +79,7 @@ const DetailThread = async (req, res) => {
       memId: member_id,
       memName: member_name,
       memEmail: email,
+      user: Encrypt(member_id),
       forum: resultTicketDetails,
     });
 
@@ -146,6 +149,7 @@ const HistoryList = async (req, res) => {
     baseUrl: config.baseUrl,
     memId: member_id,
     memName: member_name,
+    user: Encrypt(member_id)
   })
 };
 

@@ -8,16 +8,13 @@ const chalk = require("chalk");
 const CheckUser = async (req, res, next) => {
 
   let { mem_id, user } = req.query;
-  // split data from query params
-
-
 
   // check session
-  if (req.session.sessionsData) return next();
+  if (req.session.sessionsData) return next()
 
   if (user) {
-
     user = Decrypt(user);
+    // split data from query params
     let resultAdminData = user ? user.split("-") : 'unknow';
 
     if (resultAdminData.length === 3) {

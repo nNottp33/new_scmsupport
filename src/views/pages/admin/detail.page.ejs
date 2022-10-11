@@ -181,13 +181,8 @@
                                       </span>
                                     </div>
 
-                                    <small class="pa-1 comment__time"
-                                      >{{
-                                        moment
-                                          .unix(item.date_mes)
-                                          .locale("th")
-                                          .format("DD/MM/YYYY HH:mm")
-                                      }}
+                                    <small class="pa-1 comment__time">
+                                      {{ getDiffTime(item.date_mes) }}
                                     </small>
 
                                     <a
@@ -250,9 +245,9 @@
             <!-- The Modal -->
             <div ref="fullimage" id="fullImage" class="modal modal-image">
               <!-- The Close Button -->
-              <span @click="closeImage" ref="closeimage" class="close"
-                >&times;</span
-              >
+              <span @click="closeImage" ref="closeimage" class="close">
+                &times;
+              </span>
 
               <!-- Modal Content (The Image) -->
               <img class="modal-content" ref="img01" :src="imageFullSrc" />
@@ -355,6 +350,32 @@
         computed: {},
 
         methods: {
+          getDiffTime(diff) {
+            let date = moment.unix(diff, "Asia/Bangkok");
+            let now = moment().locale("th");
+            let durationObj = moment.duration(now.diff(date));
+
+            if (durationObj._data.years !== 0)
+              return `${durationObj._data.years} year ago`;
+
+            if (durationObj._data.months !== 0)
+              return `${durationObj._data.months} month ago`;
+
+            if (durationObj._data.days !== 0)
+              return `${durationObj._data.days} day ago`;
+
+            if (durationObj._data.hours !== 0)
+              return `${durationObj._data.hours} hour ago`;
+
+            if (durationObj._data.minutes !== 0)
+              return `${durationObj._data.minutes} minute ago`;
+
+            if (durationObj._data.seconds !== 0)
+              return `${durationObj._data.seconds} seconds ago`;
+
+            return `just now`;
+          },
+
           closeImage() {
             let { closeimage, fullimage } = this.$refs;
             fullimage.setAttribute(`style`, `display:none`);

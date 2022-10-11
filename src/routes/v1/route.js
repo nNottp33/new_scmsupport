@@ -1,10 +1,9 @@
 const router = require("express").Router();
 const userRouter = require("./user.router");
 const adminRouter = require("./admin.router");
-
 const globalController = require("../../controllers/v1/global.controller");
-
 const filters = require("../../middlewares/auth");
+
 // for file uploads
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -23,6 +22,10 @@ router.use("/user", filters.AuthUser, userRouter);
 router.use("/admin", filters.AuthAdmin, adminRouter);
 
 // global routes
+
+// get methods
+router.get("/logout", filters.Logout);
+
 // post methods
 router.post("/add/comment", upload.any('fileComment'), globalController.AddComment);
 
@@ -31,7 +34,5 @@ router.put("/update/status", globalController.ChangeStatus);
 
 // delete methods
 router.delete("/delete/comment", globalController.DeleteComment);
-
-
 
 module.exports = router;
