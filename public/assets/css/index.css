@@ -388,6 +388,7 @@ textarea {
 
 .admin-dropdown {
     position: relative;
+    padding: 0px 25px;
 }
 
 .admin-noti-list {
@@ -440,4 +441,51 @@ textarea {
 .btn-search__report {
     /* max-width: 300px; */
     width: 100%;
+}
+
+.img-logout {
+    max-width: 25px;
+    max-height: 25px;
+    width: 100%;
+}
+
+.a-logout {
+    font-size: 13px;
+}
+
+.img-logout__admin {
+    max-width: 11px;
+    max-height: 11px;
+    width: 100%;
+    margin-top: -3px;
+}
+
+a>.img-logout__admin:hover {
+    opacity: .8;
+}
+
+.badge-count {
+    top: -6px !important;
+    position: relative;
+    left: 8px;
+    display: none;
+    animation: pulse 2s infinite;
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgb(255, 93, 93);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
 }

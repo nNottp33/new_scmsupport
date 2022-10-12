@@ -32,10 +32,17 @@
             <p class="text-xs text-dark mb-0"><%- memId %></p>
           </div>
           <div
-            class="d-flex flex-column justify-content-center"
+            class="d-flex flex-column align-items-center m-auto justify-content-center"
             style="padding-left: 0.8em"
           >
-            <button class="" onclick="logout()">logout</button>
+            <button
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title="Logout"
+              onclick="logout()"
+            >
+              <img class="img-logout" src="/assets/images/logout.png" />
+            </button>
           </div>
         </div>
       </div>

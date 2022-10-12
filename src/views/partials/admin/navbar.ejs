@@ -32,7 +32,12 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <i class="fa fa-bell cursor-pointer" aria-hidden="true"></i>
+            <i class="fa fa-bell cursor-pointer" aria-hidden="true">
+              <span
+                class="badge-count translate-middle badge rounded-pill bg-danger"
+              >
+              </span>
+            </i>
           </a>
 
           <ul
@@ -81,12 +86,25 @@
         <li class="nav-item px-3 d-flex align-items-center">
           <div class="d-flex py-1">
             <div
-              class="text-right avatar avatar-sm me-2 <%- role == 'user' ? 'avatar-user' : 'avatar-admin' %>"
+              class="text-right m-auto justify-content-center avatar avatar-sm me-2 <%- role == 'user' ? 'avatar-user' : 'avatar-admin' %>"
             >
               <%- admin[0] %>
             </div>
             <div class="d-flex flex-column justify-content-center">
               <h6 class="mb-0 text-dark text-sm"><%- admin %></h6>
+              <button
+                class="a-logout"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="Logout"
+                onclick="logout()"
+              >
+                <img
+                  class="img-logout__admin"
+                  src="/assets/images/logout.png"
+                />
+                Logout
+              </button>
             </div>
           </div>
         </li>
@@ -96,12 +114,65 @@
 </nav>
 
 <script>
-  // toggle notification
-  let toogleNoti = () => {
-    document.querySelector(".dropdown-menu").classList.toggle("show");
+  const dropDown = document.querySelector(".dropdown-menu");
+  const badge = document.querySelector(".badge-count");
+  const adminDropDown = document.querySelector(".admin-dropdown");
+  const dropDownBtn = document.querySelector("#dropdownMenuButton");
+  let data = {
+    user: "<%- id %>",
   };
 
-  document
-    .querySelector("#dropdownMenuButton")
-    .addEventListener("click", toogleNoti);
+  // toggle notification
+  let toogleNoti = async () => {
+    dropDown.classList.toggle("show");
+    let result = await axios
+      .post(`${baseUrl}admin/notification`, data)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  dropDownBtn.addEventListener("click", toogleNoti);
+
+  const countNotification = async () => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}admin/notification/count`,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
+
+    if (result.status !== 200) {
+      console.log(result);
+    }
+
+    let totalNotification = result.data[0].n_ticket + result.data[0].n_comment;
+
+    if (totalNotification !== 0) {
+      badge.style.display = "inline-block";
+      adminDropDown.style.padding = "0px 0px";
+      badge.innerHTML = totalNotification;
+      return;
+    }
+
+    badge.style.display = "none";
+    return;
+  };
+
+  onload = async (event) => {
+    countNotification();
+  };
 </script>

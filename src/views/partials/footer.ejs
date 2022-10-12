@@ -20,8 +20,16 @@
   }
 
   const logout = () => {
-    let hostname = `<%= baseUrl %>`;
-    $.get(`${hostname}/logout`);
+    if (confirm("Are you sure you want to log out?")) {
+      let hostname = `<%= baseUrl %>`;
+      $.get(`${hostname}logout`, (data, status, xhr) => {
+        console.log(data.message);
+        setTimeout(
+          () => window.location.replace("https://www.successmore1.com/"),
+          1000,
+        );
+      });
+    }
   };
 </script>
 <!-- Github buttons -->

@@ -8,5 +8,7 @@ adminRouter.get("/report", adminController.ReportPage);
 
 // methods POST
 adminRouter.post("/report/result", adminController.GetReport);
+adminRouter.post("/notification/count", adminController.CountNotification)
+adminRouter.post("/notification", adminController.FetchedNotifications)
 
 module.exports = adminRouter;

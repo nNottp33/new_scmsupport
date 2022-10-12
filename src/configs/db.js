@@ -14,13 +14,4 @@ const conKnex = knex.default({
     pool: { min: 0, max: 7 }
 });
 
-// const ExecuteQuery = async (sql) => {
-//     return await new Promise((resolve, reject) => {
-//         connection.query(sql, (err, result, fields) => {
-//             if (err) throw err;
-//             return err ? reject(err) : resolve(result);
-//         });
-//     });
-// }
-
 module.exports = conKnex;
