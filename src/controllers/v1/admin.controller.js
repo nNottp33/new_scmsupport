@@ -55,8 +55,6 @@ const DetailThread = async (req, res) => {
             .where('f_ticket_detail.ticket_id', '=', ticketid)
             .groupBy('f_ticket_detail.ticket_id');
 
-
-
         return res.status(httpStatus.OK).render("pages/admin/detail.page.ejs", {
             baseUrl: config.baseUrl,
             pages: {
@@ -177,30 +175,17 @@ const GetReport = async (req, res) => {
     }
 }
 
-const CountNotification = async (req, res) => {
-    let { user } = req.body;
-
-    try {
-        let count = await conKnex.select(conKnex.raw('c_f_ticket.total as n_ticket, c_t_comment.total as n_comment'))
-            .fromRaw('( SELECT COUNT(f_ticket.ticket_id) AS total FROM f_ticket WHERE f_ticket.approve_date = 0) AS c_f_ticket, ( SELECT COUNT(t_comment.mid) AS total FROM t_comment WHERE t_comment.status = 0 AND t_comment.u_id <> ' + user + ' AND t_comment.ticket_id IN ( ( SELECT t_comment.ticket_id FROM t_comment WHERE u_id = "' + user + '" )  ) ) AS c_t_comment');
-
-        return res.status(httpStatus.OK).send(count);
-
-    } catch (e) {
-        logger.error(chalk.bold.red(e));
-    }
-}
-
-// *** NOTE:
-// ตัด CountNotification ออกใช้แค่ FetchedNotifications แล้วเอา length จาก key => data ของทั้ง 2 type มา + กัน จะได้จำนวนทั้งหมด
-
 const FetchedNotifications = async (req, res) => {
     let { user } = req.body;
 
     try {
 
+        // , conKnex.raw('JSON_ARRAYAGG( JSON_OBJECT( "id", n_l_comment.mid,  "ticketId", n_l_comment.ticket_id, "msg", n_l_comment.txt_msg, "createdAt", n_l_comment.date_mes,"uId", n_l_comment.u_id, "uname", n_l_comment.u_name, "attachFile", n_l_comment.attach_file) ) AS comment')
+
+        // , (SELECT t_comment.* FROM t_comment WHERE t_comment.status = 0 ) AS n_l_comment
+
         let resulteNotifications = await conKnex.select(conKnex.raw('JSON_ARRAYAGG(JSON_OBJECT( "id", n_l_ticket.ticket_id, "uid", n_l_ticket.mcode, "uname", n_l_ticket.mname, "catalog", (JSON_OBJECT( "TH", n_l_ticket.catalog_nameTH, "EN", n_l_ticket.catalog_nameEN, "id", n_l_ticket.catalog_id )),"createdAt", n_l_ticket.create_date) ) AS ticket'))
-            .fromRaw('( SELECT f_ticket.*, d_catalog.catalog_nameTH,  d_catalog.catalog_nameEN FROM f_ticket INNER JOIN d_catalog ON d_catalog.catalog_id = f_ticket.catalog_id WHERE status = 0 ORDER BY ticket_id DESC ) AS n_l_ticket')
+            .fromRaw('( SELECT f_ticket.*, d_catalog.catalog_nameTH, d_catalog.catalog_nameEN FROM f_ticket INNER JOIN d_catalog ON d_catalog.catalog_id = f_ticket.catalog_id WHERE status = 0 ORDER BY ticket_id DESC ) AS n_l_ticket')
 
         let notificationList = [
             {
@@ -213,11 +198,11 @@ const FetchedNotifications = async (req, res) => {
             }
         ]
 
-        console.log(resulteNotifications[0]);
+        console.log(resulteNotifications)
+        console.log(resulteNotifications[0].ticket)
+        console.log(resulteNotifications[0].comment)
 
-        console.log(notificationList);
-
-        // return res.status(httpStatus.OK).send(notificationList)
+        return res.status(httpStatus.OK).send(notificationList)
 
     } catch (e) {
         logger.error(chalk.bold.red(e));
@@ -263,6 +248,5 @@ module.exports = {
     DetailThread,
     ReportPage,
     GetReport,
-    CountNotification,
     FetchedNotifications
 }

@@ -118,6 +118,7 @@
   const badge = document.querySelector(".badge-count");
   const adminDropDown = document.querySelector(".admin-dropdown");
   const dropDownBtn = document.querySelector("#dropdownMenuButton");
+
   let data = {
     user: "<%- id %>",
   };
@@ -125,25 +126,14 @@
   // toggle notification
   let toogleNoti = async () => {
     dropDown.classList.toggle("show");
-    let result = await axios
-      .post(`${baseUrl}admin/notification`, data)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
   };
 
   dropDownBtn.addEventListener("click", toogleNoti);
 
-  const countNotification = async () => {
+  const fetchNotification = async () => {
     let config = {
       method: "POST",
-      url: `${baseUrl}admin/notification/count`,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      url: `${baseUrl}admin/notification`,
       data: data,
     };
 
@@ -159,7 +149,17 @@
       console.log(result);
     }
 
-    let totalNotification = result.data[0].n_ticket + result.data[0].n_comment;
+    let ticketIndex = result.data.findIndex((object) => {
+      return object.type === "ticket";
+    });
+
+    let commentIndex = result.data.findIndex((object) => {
+      return object.type === "comment";
+    });
+
+    let totalNotification =
+      result.data[ticketIndex].data.length +
+      result.data[commentIndex].data.length;
 
     if (totalNotification !== 0) {
       badge.style.display = "inline-block";
@@ -173,6 +173,6 @@
   };
 
   onload = async (event) => {
-    countNotification();
+    fetchNotification();
   };
 </script>
