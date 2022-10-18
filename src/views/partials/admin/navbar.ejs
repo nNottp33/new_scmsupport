@@ -44,7 +44,7 @@
             class="dropdown-menu admin-noti-list dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
           >
-            <li class="mb-2">
+            <!-- <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
                   <div class="my-auto">
@@ -65,7 +65,7 @@
                   </div>
                 </div>
               </a>
-            </li>
+            </li> -->
           </ul>
         </li>
 
@@ -118,17 +118,59 @@
   const badge = document.querySelector(".badge-count");
   const adminDropDown = document.querySelector(".admin-dropdown");
   const dropDownBtn = document.querySelector("#dropdownMenuButton");
+  let notifications;
 
   let data = {
     user: "<%- id %>",
   };
 
   // toggle notification
-  let toogleNoti = async () => {
+  let toogleNotification = async () => {
     dropDown.classList.toggle("show");
+
+    let html = "";
+
+    notifications.forEach((obj, index, array) => {
+      html += `<li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="#">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <div
+                      class="text-right m-auto justify-content-center avatar avatar-sm me-2 ${
+                        obj.urole === "admin" ? "avatar-admin" : "avatar-user"
+                      }"
+                    >
+                      ${obj.uname.charAt(0)}
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      <span class="font-weight-bold">${
+                        obj.type === "update status"
+                          ? "Update to " + obj.type + " by "
+                          : "New " + obj.type + " from "
+                      }</span>
+                      ${obj.uname}
+                    </h6>
+
+                    <p class="text-xs text-dark mb-1">
+                      <q> ${obj.detail} </q>
+                    </p>
+
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${getDiffTime(obj.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </li> `;
+
+      dropDown.innerHTML = html;
+    });
   };
 
-  dropDownBtn.addEventListener("click", toogleNoti);
+  dropDownBtn.addEventListener("click", toogleNotification);
 
   const fetchNotification = async () => {
     let config = {
@@ -149,27 +191,43 @@
       console.log(result);
     }
 
-    let ticketIndex = result.data.findIndex((object) => {
-      return object.type === "ticket";
-    });
-
-    let commentIndex = result.data.findIndex((object) => {
-      return object.type === "comment";
-    });
-
-    let totalNotification =
-      result.data[ticketIndex].data.length +
-      result.data[commentIndex].data.length;
-
-    if (totalNotification !== 0) {
+    if (result.data.length !== 0) {
       badge.style.display = "inline-block";
       adminDropDown.style.padding = "0px 0px";
-      badge.innerHTML = totalNotification;
+      badge.innerHTML = result.data.length;
+      notifications = result.data;
+      notifications.sort((a, b) => b.id - a.id);
       return;
     }
 
     badge.style.display = "none";
     return;
+  };
+
+  const getDiffTime = (diff) => {
+    let date = moment.unix(diff, "Asia/Bangkok");
+    let now = moment().locale("th");
+    let durationObj = moment.duration(now.diff(date));
+
+    if (durationObj._data.years !== 0)
+      return `${durationObj._data.years} year ago`;
+
+    if (durationObj._data.months !== 0)
+      return `${durationObj._data.months} month ago`;
+
+    if (durationObj._data.days !== 0)
+      return `${durationObj._data.days} day ago`;
+
+    if (durationObj._data.hours !== 0)
+      return `${durationObj._data.hours} hour ago`;
+
+    if (durationObj._data.minutes !== 0)
+      return `${durationObj._data.minutes} minute ago`;
+
+    if (durationObj._data.seconds !== 0)
+      return `${durationObj._data.seconds} seconds ago`;
+
+    return `just now`;
   };
 
   onload = async (event) => {

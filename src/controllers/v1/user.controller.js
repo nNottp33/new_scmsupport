@@ -91,7 +91,7 @@ const DetailThread = async (req, res) => {
 };
 
 const NewTicket = async (req, res) => {
-  let { email, member_id, member_name, mobile } = req.session.sessionsData;
+  let { email, member_id, member_name, mobile, role } = req.session.sessionsData;
   let { selectType, inputDetail } = req.body;
   let filename = req.file ? req.file.filename : null;
 
@@ -107,30 +107,38 @@ const NewTicket = async (req, res) => {
       })
       .into('f_ticket')
       .then(async function (ticket_id) {
-        try {
-          await conKnex.insert(
-            {
-              ticket_id: ticket_id,
+
+        await conKnex.insert(
+          {
+            ticket_id: ticket_id,
+            detail: inputDetail,
+            attach_file: filename,
+            create_date: moment().tz("Asia/Bangkok").unix(),
+          })
+          .into('f_ticket_detail')
+          .then(async function () {
+
+            await conKnex.insert({
               detail: inputDetail,
+              uid: member_id,
+              uname: member_name,
+              type: "ticket",
+              ticket_id: ticket_id,
+              createdAt: moment.tz('Asia/Bangkok').unix(),
               attach_file: filename,
-              create_date: moment().tz("Asia/Bangkok").unix(),
+              urole: role
             })
-            .into('f_ticket_detail')
+              .into('n_log')
+              .then(async function () {
+                logger.info('Inserted ticket successfully');
+                return res.json({
+                  status: 200,
+                  message: 'Create success!'
+                })
+              });
+          });
+      })
 
-          logger.info('Inserted ticket successfully');
-          return res.json({
-            status: 200,
-            message: 'Create success!'
-          })
-
-        } catch (e) {
-          logger.error(chalk.red(e))
-          return res.json({
-            status: 400,
-            message: `Can't inserted Data`
-          })
-        }
-      });
   } catch (error) {
     logger.error(chalk.red(error))
     return res.json({

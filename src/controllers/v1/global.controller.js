@@ -10,6 +10,7 @@ const logger = require("../../configs/logger");
 
 const AddComment = async (req, res) => {
     let { u_id, u_name, txt_msg, ticketId } = req.body;
+    let { role } = req.session.sessionsData;
     let filename = req.files.length > 0 ? req.files[0].filename : null;
 
     let commentServer = {
@@ -28,10 +29,23 @@ const AddComment = async (req, res) => {
             .then(async function (mid) {
                 commentServer.mid = mid[0];
 
-                return res.status(httpStatus.OK).send({
-                    body: commentServer
-                });
+                await conKnex.insert({
+                    detail: txt_msg,
+                    uid: u_id,
+                    uname: u_name,
+                    type: "comment",
+                    ticket_id: ticketId,
+                    createdAt: moment.tz('Asia/Bangkok').unix(),
+                    attach_file: filename,
+                    urole: role
+                })
+                    .into('n_log')
+                    .then(async function () {
 
+                        return res.status(httpStatus.OK).send({
+                            body: commentServer
+                        });
+                    })
             });
     } catch (e) {
         logger.error(chalk.bold.red(e));
