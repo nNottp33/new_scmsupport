@@ -180,22 +180,11 @@ const FetchedNotifications = async (req, res) => {
 
     try {
 
-        // let ticket = await conKnex.select(conKnex.raw('JSON_ARRAYAGG(JSON_OBJECT( "id", n_l_ticket.ticket_id, "uid", n_l_ticket.mcode, "uname", n_l_ticket.mname, "catalog", (JSON_OBJECT( "TH", n_l_ticket.catalog_nameTH, "EN", n_l_ticket.catalog_nameEN, "id", n_l_ticket.catalog_id )),"createdAt", n_l_ticket.create_date, "type", "ticket") ) AS ticket'))
-        //     .fromRaw('(SELECT f_ticket.*, d_catalog.catalog_nameTH, d_catalog.catalog_nameEN FROM f_ticket INNER JOIN d_catalog ON d_catalog.catalog_id = f_ticket.catalog_id WHERE status = 0 AND approve_date = 0 ORDER BY ticket_id DESC ) n_l_ticket')
+        let resultNotification = await conKnex.distinct('ntf_comment.*', 'ntf_ticket.*')
+            .fromRaw('(SELECT n_log.* FROM n_log LEFT JOIN f_ticket ON f_ticket.ticket_id = n_log.ticket_id WHERE uid <> ?) ntf_ticket, (SELECT * FROM n_log WHERE uid <> ? AND ticket_id IN ( SELECT ticket_id AS t_id FROM t_comment WHERE u_id = ? ) )  ntf_comment', [user, user, user])
+            .groupBy('ntf_ticket.ticket_id')
 
-        // let comment = await conKnex.select(conKnex.raw('JSON_ARRAYAGG( JSON_OBJECT( "id", n_l_comment.mid,  "ticketId", n_l_comment.ticket_id, "msg", n_l_comment.txt_msg, "createdAt", n_l_comment.date_mes,"uid", n_l_comment.u_id, "uname", n_l_comment.u_name, "attachFile", n_l_comment.attach_file,  "type", "comment") ) comment'))
-        //     .fromRaw('(SELECT t_comment.* FROM t_comment WHERE t_comment.status = 0 AND u_id <> ? AND ticket_id IN ( SELECT ticket_id FROM t_comment WHERE u_id = ? ) ) AS n_l_comment', [user, user])
-
-        // ticket ใหม่ที่ user พึ่งเปิด
-        // ticket ที่มีการเปลี่ยนสถานะจาก admin คนอื่น
-        //- comment จากคนอื่นที่ไม่ใช่เรา
-        let resultNewComment = await conKnex.select('ntf_comment.*', 'n_ticket.*')
-            .fromRaw('(SELECT * FROM n_log INNER JOIN f_ticket ON f_ticket.ticket_id = n_log.ticket_id WHERE approve_date = 0 ) n_ticket, (SELECT * FROM n_log WHERE uid <> ? AND ticket_id IN ( SELECT ticket_id FROM t_comment WHERE u_id = ? ) ) ntf_comment', [user, user])
-            .groupBy('n_ticket.id')
-
-        console.log(resultNewComment);
-
-        // return res.status(httpStatus.OK).send(resultNewComment)
+        return res.status(httpStatus.OK).send(resultNotification)
 
     } catch (e) {
         logger.error(chalk.bold.red(e));

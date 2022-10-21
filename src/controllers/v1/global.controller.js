@@ -57,20 +57,42 @@ const AddComment = async (req, res) => {
 }
 
 const ChangeStatus = async (req, res) => {
-    let { id, status } = req.body;
+    let { id, status, user } = req.body;
+    let { role, } = req.session.sessionsData;
 
     try {
 
-        await conKnex('f_ticket').update('status_id', status).where('ticket_id', id)
-            .then(async () => {
-                if (status === 2) await conKnex('f_ticket').update('approve_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
 
-                if (status === 3) await conKnex('f_ticket').update('close_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
+        // select status string
+        await conKnex('d_statuss').first('status_descEN').where('status_id', status).then(async (row) => {
 
-                return res.status(httpStatus.OK).send({
-                    message: "Update status successfully"
+            // update status
+            await conKnex('f_ticket').update('status_id', status).where('ticket_id', id)
+                .then(async () => {
+                    if (status === 2) await conKnex('f_ticket').update('approve_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
+
+                    if (status === 3) await conKnex('f_ticket').update('close_date', moment.tz('Asia/Bangkok').unix()).where('ticket_id', id)
+
+                    // save n_log
+                    await conKnex.insert({
+                        detail: `Update status to ${row.status_descEN} `,
+                        uid: user.id,
+                        uname: user.uname,
+                        type: "update status",
+                        ticket_id: id,
+                        createdAt: moment.tz('Asia/Bangkok').unix(),
+
+                        urole: role
+                    })
+                        .into('n_log')
+                        .then(async function () {
+
+                            return res.status(httpStatus.OK).send({
+                                message: "Update status successfully"
+                            })
+                        })
                 })
-            })
+        })
 
     } catch (e) {
         logger.error(chalk.bold.red(e));

@@ -334,6 +334,9 @@
       const role = "<%- role %>";
       const ticketData = JSON.parse(`<%-JSON.stringify(ticket[0])%>`);
       const ticketStatus = [];
+      const nameUser = "<%- admin %>";
+      const uId = "<%- id %>";
+      const branch = "<%- branch %>";
 
       const app = new Vue({
         el: "#app",
@@ -395,6 +398,10 @@
                 .put(`${baseUrl}update/status`, {
                   id: ticketId,
                   status: status,
+                  user: {
+                    id: uId,
+                    uname: nameUser,
+                  },
                 })
                 .then(function (response) {
                   return response;

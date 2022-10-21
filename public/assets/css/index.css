@@ -393,6 +393,7 @@ textarea {
 
 .admin-noti-list {
     right: 10px !important;
+
 }
 
 .card-count___ticket {
@@ -488,4 +489,10 @@ a>.img-logout__admin:hover {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
+}
+
+.admin-noti-list,
+.user-noti-list {
+    max-height: 300px;
+    overflow-y: auto;
 }
