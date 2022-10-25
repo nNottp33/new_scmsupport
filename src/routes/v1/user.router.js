@@ -25,6 +25,6 @@ userRouter.get("/ticket/history", userController.HistoryList);
 userRouter.post("/ticket/list", userController.ThreadList);
 userRouter.post("/add/new/ticket", upload.single('fileUpload'), userController.NewTicket);
 userRouter.post("/ticket/history/search", userController.SearchHistory);
-
+userRouter.post("/notification", userController.FetchedNotifications);
 
 module.exports = userRouter;

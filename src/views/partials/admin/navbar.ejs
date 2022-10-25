@@ -43,30 +43,7 @@
           <ul
             class="dropdown-menu admin-noti-list dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
-          >
-            <!-- <li class="mb-2">
-              <a class="dropdown-item border-radius-md" href="javascript:;">
-                <div class="d-flex py-1">
-                  <div class="my-auto">
-                    <img
-                      src="/assets/images/team-2.jpg"
-                      class="avatar avatar-sm me-3"
-                    />
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="text-sm font-weight-normal mb-1">
-                      <span class="font-weight-bold">New message</span>
-                      from Laur
-                    </h6>
-                    <p class="text-xs text-secondary mb-0">
-                      <i class="fa fa-clock me-1"></i>
-                      13 minutes ago
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </li> -->
-          </ul>
+          ></ul>
         </li>
 
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -126,13 +103,18 @@
 
   // toggle notification
   let toogleNotification = async () => {
-    dropDown.classList.toggle("show");
+    if (notifications.length === 0) {
+      return;
+    }
 
+    dropDown.classList.toggle("show");
     let html = "";
 
     notifications.forEach((obj, index, array) => {
       html += `<li class="mb-2">
-              <a class="dropdown-item border-radius-md" href="#">
+              <a class="dropdown-item border-radius-md"href="${baseUrl}admin/support/scm/thread/detail/${
+        obj.ticket_id
+      }">
                 <div class="d-flex py-1">
                   <div class="my-auto">
                     <div
@@ -147,13 +129,24 @@
                     <h6 class="text-sm font-weight-normal mb-1">
                       <span class="font-weight-bold">${
                         obj.type === "update status"
-                          ? "Update to " + obj.type + " by "
+                          ? obj.type.charAt(0).toUpperCase() +
+                            obj.type.slice(1) +
+                            " by "
                           : "New " + obj.type + " from "
                       }</span>
-                      ${obj.uname}
-                    </h6>
 
-                    <p class="text-xs text-dark mb-1">
+                      ${obj.uname} `;
+
+      if (obj.type !== "ticket") {
+        html += `<p class="text-sm font-weight-normal mb-1">
+                                          on post
+                                          <span class="text-dark font-weight-bold"> ${obj.d_ticket} 
+                                          </span>
+                                        </p> `;
+      }
+
+      html += `</h6>
+                  <p class="text-xs text-dark mb-1">
                       <q> ${obj.detail} </q>
                     </p>
 
@@ -204,30 +197,29 @@
     return;
   };
 
-  const getDiffTime = (diff) => {
-    let date = moment.unix(diff, "Asia/Bangkok");
-    let now = moment().locale("th");
-    let durationObj = moment.duration(now.diff(date));
+  const readNotification = async (nId, tId) => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}notification/action`,
+      data: Object.assign(data, {
+        id: nId,
+        ticket: tId,
+      }),
+    };
 
-    if (durationObj._data.years !== 0)
-      return `${durationObj._data.years} year ago`;
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
 
-    if (durationObj._data.months !== 0)
-      return `${durationObj._data.months} month ago`;
+    if (result.status !== 200) {
+      console.log(result);
+    }
 
-    if (durationObj._data.days !== 0)
-      return `${durationObj._data.days} day ago`;
-
-    if (durationObj._data.hours !== 0)
-      return `${durationObj._data.hours} hour ago`;
-
-    if (durationObj._data.minutes !== 0)
-      return `${durationObj._data.minutes} minute ago`;
-
-    if (durationObj._data.seconds !== 0)
-      return `${durationObj._data.seconds} seconds ago`;
-
-    return `just now`;
+    window.location.href = `admin/support/scm/thread/detail/${tId}`;
   };
 
   onload = async (event) => {

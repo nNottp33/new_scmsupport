@@ -36,6 +36,7 @@ const AdminThread = async (req, res) => {
 
     } catch (e) {
         logger.error(chalk.bold.red(e))
+        await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
         return res.status(httpStatus.BAD_REQUEST).render("pages/error");
     }
 }
@@ -180,14 +181,18 @@ const FetchedNotifications = async (req, res) => {
 
     try {
 
-        let resultNotification = await conKnex.distinct('ntf_comment.*', 'ntf_ticket.*')
+        let resultNotification = await conKnex.distinct('ntf_comment.*', 'ntf_ticket.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'f_ticket_detail.detail AS d_ticket')
             .fromRaw('(SELECT n_log.* FROM n_log LEFT JOIN f_ticket ON f_ticket.ticket_id = n_log.ticket_id WHERE uid <> ?) ntf_ticket, (SELECT * FROM n_log WHERE uid <> ? AND ticket_id IN ( SELECT ticket_id AS t_id FROM t_comment WHERE u_id = ? ) )  ntf_comment', [user, user, user])
+            .innerJoin('f_ticket_detail', 'ntf_comment.ticket_id', 'f_ticket_detail.ticket_id')
+            .innerJoin('f_ticket', 'ntf_comment.ticket_id', 'f_ticket.ticket_id')
+            .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
             .groupBy('ntf_ticket.ticket_id')
 
         return res.status(httpStatus.OK).send(resultNotification)
 
     } catch (e) {
         logger.error(chalk.bold.red(e));
+        await conKnex.raw(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`)
     }
 }
 

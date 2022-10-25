@@ -192,6 +192,27 @@ const SearchHistory = async (req, res) => {
   }
 }
 
+const FetchedNotifications = async (req, res) => {
+  let { user } = req.body;
+
+  try {
+    let resultNotification = await conKnex.distinct('ntf_comment.*', 'd_catalog.catalog_nameTH', 'd_catalog.catalog_nameEN', 'f_ticket_detail.detail AS d_ticket')
+      .fromRaw('(SELECT * FROM n_log WHERE uid <> ? AND ticket_id IN (SELECT ticket_id FROM f_ticket WHERE mcode = ?) )  ntf_comment', [user, user])
+      .innerJoin('f_ticket_detail', 'ntf_comment.ticket_id', 'f_ticket_detail.ticket_id')
+      .innerJoin('f_ticket', 'ntf_comment.ticket_id', 'f_ticket.ticket_id')
+      .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
+    // .whereRaw('? IN ( JSON_EXTRACT(ntf_comment.uread, "$[*]") )', user)
+
+    console.log(user);
+    console.log(resultNotification);
+
+    return res.status(httpStatus.OK).send(resultNotification);
+
+  } catch (e) {
+    logger.error(chalk.bold.red(e));
+  }
+}
+
 
 module.exports = {
   UserThread,
@@ -200,5 +221,6 @@ module.exports = {
   NewTicket,
   HistoryList,
   SearchHistory,
+  FetchedNotifications
 };
 

@@ -129,9 +129,30 @@ const DeleteComment = async (req, res) => {
     }
 }
 
+
+const ActionReadUnRead = async (req, res) => {
+    let { ticket, user, id } = req.body;
+
+    try {
+
+        await conKnex('n_log')
+            .where('n_log.id', id)
+            .update({
+                uread: conKnex.raw('JSON_ARRAY_APPEND( uread, "$", ?)', user)
+            })
+
+        return res.status(httpStatus.OK)
+
+    } catch (e) {
+        logger.error(chalk.bold.red(e));
+        return res.status(httpStatus.BAD_REQUEST)
+    }
+}
+
 module.exports = {
     AddComment,
     ChangeStatus,
     DeleteComment,
+    ActionReadUnRead
 }
 

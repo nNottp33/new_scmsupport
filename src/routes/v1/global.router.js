@@ -20,6 +20,7 @@ globalRouter.get("/logout", filters.Logout);
 
 // post methods
 globalRouter.post("/add/comment", upload.any('fileComment'), globalController.AddComment);
+globalRouter.post("/notification/action", globalController.ActionReadUnRead);
 
 // put methods
 globalRouter.put("/update/status", globalController.ChangeStatus);

@@ -1,11 +1,135 @@
 <script src="/assets/js/header.js"></script>
 <script>
-  // toggle notification
-  let toogleNotification = () => {
-    document.querySelector(".dropdown-menu").classList.toggle("show");
+  const dropDown = document.querySelector(".dropdown-menu");
+  const badge = document.querySelector(".badge-count");
+  const dropDownBtn = document.querySelector("#userDropDownBtn");
+  let notifications;
+
+  let data = {
+    user: "<%- memId %>",
   };
 
-  document
-    .querySelector(".dropdown-toggle")
-    .addEventListener("click", toogleNotification);
+  // toggle notification
+  let toogleNotification = async () => {
+    if (notifications.length === 0) {
+      return;
+    }
+
+    dropDown.classList.toggle("show");
+    let html = "";
+
+    notifications.forEach((obj, index, array) => {
+      html += `<li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="#" onclick="readNotification(${
+                obj.id
+              }, ${obj.ticket_id})">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <div
+                      class="text-right m-auto justify-content-center avatar avatar-sm me-2 ${
+                        obj.urole === "admin" ? "avatar-admin" : "avatar-user"
+                      }"
+                    >
+                      ${obj.uname.charAt(0)}
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      <span class="font-weight-bold">${
+                        obj.type === "update status"
+                          ? obj.type.charAt(0).toUpperCase() +
+                            obj.type.slice(1) +
+                            " by "
+                          : "New " + obj.type + " from "
+                      }</span>
+                      ${obj.uname} `;
+      if (obj.type !== "ticket") {
+        html += `<p class="text-sm font-weight-normal mb-1">
+                                                        on post
+                                                        <span class="text-dark font-weight-bold"> ${obj.d_ticket} 
+                                                        </span>
+                                                      </p> `;
+      }
+
+      html += `</h6>
+
+                    <p class="text-xs text-dark mb-1">
+                      <q> ${obj.detail} </q>
+                    </p>
+
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${getDiffTime(obj.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </li> `;
+
+      dropDown.innerHTML = html;
+    });
+  };
+
+  dropDownBtn.addEventListener("click", toogleNotification);
+
+  const fetchNotification = async () => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}user/notification`,
+      data: data,
+    };
+
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
+
+    if (result.status !== 200) {
+      console.log(result);
+    }
+
+    if (result.data.length !== 0) {
+      badge.style.display = "inline-block";
+      badge.innerHTML = result.data.length;
+      notifications = result.data;
+      notifications.sort((a, b) => b.id - a.id);
+      return;
+    }
+
+    badge.style.display = "none";
+
+    return;
+  };
+
+  const readNotification = async (nId, tId) => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}notification/action`,
+      data: Object.assign(data, {
+        id: nId,
+        ticket: tId,
+      }),
+    };
+
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
+
+    if (result.status !== 200) {
+      console.log(result);
+    }
+
+    // window.location.href = `user/support/scm/thread/detail/${tId}`;
+  };
+
+  onload = async (event) => {
+    fetchNotification();
+  };
 </script>

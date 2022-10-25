@@ -44,3 +44,31 @@
 <%- include('./user/footer.ejs'); %>
 <!-- css for user navbar end -->
 <% } %>
+
+<script>
+  const getDiffTime = (diff) => {
+    let date = moment.unix(diff, "Asia/Bangkok");
+    let now = moment().locale("th");
+    let durationObj = moment.duration(now.diff(date));
+
+    if (durationObj._data.years !== 0)
+      return `${durationObj._data.years} year ago`;
+
+    if (durationObj._data.months !== 0)
+      return `${durationObj._data.months} month ago`;
+
+    if (durationObj._data.days !== 0)
+      return `${durationObj._data.days} day ago`;
+
+    if (durationObj._data.hours !== 0)
+      return `${durationObj._data.hours} hour ago`;
+
+    if (durationObj._data.minutes !== 0)
+      return `${durationObj._data.minutes} minute ago`;
+
+    if (durationObj._data.seconds !== 0)
+      return `${durationObj._data.seconds} seconds ago`;
+
+    return `just now`;
+  };
+</script>
