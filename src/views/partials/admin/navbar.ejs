@@ -1,0 +1,237 @@
+<nav
+  class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
+  id="navbarBlur"
+  navbar-scroll="true"
+>
+  <div class="container-fluid py-1 px-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+        <li class="breadcrumb-item text-sm">
+          <a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+        </li>
+        <li
+          class="breadcrumb-item text-sm text-dark active"
+          aria-current="page"
+        >
+          <%= pages.name %>
+        </li>
+      </ol>
+      <h6 class="font-weight-bolder mb-0"><%= pages.name %></h6>
+    </nav>
+    <div
+      class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4"
+      id="navbar"
+    >
+      <div class="ms-md-auto pe-md-3 d-flex align-items-center"></div>
+      <ul class="navbar-nav justify-content-end">
+        <li class="nav-item dropdown admin-dropdown d-flex align-items-center">
+          <a
+            href="javascript:;"
+            class="nav-link text-body p-0"
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa fa-bell cursor-pointer" aria-hidden="true">
+              <span
+                class="badge-count translate-middle badge rounded-pill bg-danger"
+              >
+              </span>
+            </i>
+          </a>
+
+          <ul
+            class="dropdown-menu admin-noti-list dropdown-menu-end px-2 py-3 me-sm-n4"
+            aria-labelledby="dropdownMenuButton"
+          ></ul>
+        </li>
+
+        <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+          <a
+            href="javascript:;"
+            class="nav-link text-body p-0"
+            id="iconNavbarSidenav"
+          >
+            <div class="sidenav-toggler-inner">
+              <i class="sidenav-toggler-line"></i>
+              <i class="sidenav-toggler-line"></i>
+              <i class="sidenav-toggler-line"></i>
+            </div>
+          </a>
+        </li>
+
+        <li class="nav-item px-3 d-flex align-items-center">
+          <div class="d-flex py-1">
+            <div
+              class="text-right m-auto justify-content-center avatar avatar-sm me-2 <%- role == 'user' ? 'avatar-user' : 'avatar-admin' %>"
+            >
+              <%- admin[0] %>
+            </div>
+            <div class="d-flex flex-column justify-content-center">
+              <h6 class="mb-0 text-dark text-sm"><%- admin %></h6>
+              <button
+                class="a-logout"
+                data-toggle="tooltip"
+                data-placement="bottom"
+                title="Logout"
+                onclick="logout()"
+              >
+                <img
+                  class="img-logout__admin"
+                  src="/assets/images/logout.png"
+                />
+                Logout
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const dropDown = document.querySelector(".dropdown-menu");
+  const badge = document.querySelector(".badge-count");
+  const adminDropDown = document.querySelector(".admin-dropdown");
+  const dropDownBtn = document.querySelector("#dropdownMenuButton");
+  let notifications = [];
+
+  let data = {
+    user: "<%- id %>",
+  };
+
+  // toggle notification
+  let toogleNotification = async () => {
+    if (notifications.length === 0) {
+      return;
+    }
+
+    dropDown.classList.toggle("show");
+    let html = "";
+
+    notifications.forEach((obj, index, array) => {
+      html += `<li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="#" onclick="readNotification(${
+                obj.id
+              }, ${obj.ticket_id})">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <div
+                      class="text-right m-auto justify-content-center avatar avatar-sm me-2 ${
+                        obj.urole === "admin" ? "avatar-admin" : "avatar-user"
+                      }"
+                    >
+                      ${obj.uname.charAt(0)}
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      <span class="font-weight-bold">${
+                        obj.type === "update status"
+                          ? obj.type.charAt(0).toUpperCase() +
+                            obj.type.slice(1) +
+                            " by "
+                          : "New " + obj.type + " from "
+                      }</span>
+
+                      ${obj.uname} `;
+
+      if (obj.type !== "ticket") {
+        html += `<p class="text-sm font-weight-normal mb-1">
+                                          on post
+                                          <span class="text-dark font-weight-bold"> ${obj.d_ticket} 
+                                          </span>
+                                        </p> `;
+      }
+
+      html += `</h6>
+                  <p class="text-xs text-dark mb-1">
+                      <q> ${obj.detail} </q>
+                    </p>
+
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${getDiffTime(obj.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </li> `;
+
+      dropDown.innerHTML = html;
+    });
+  };
+
+  dropDownBtn.addEventListener("click", toogleNotification);
+
+  const fetchNotification = async () => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}admin/notification`,
+      data: data,
+    };
+
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
+
+    if (result.status !== 200) {
+      console.log(result);
+    }
+
+    if (result.data.length !== 0) {
+      result.data.forEach((obj, index, arr) => {
+        if (!JSON.parse(obj.uread).includes(data.user)) {
+          notifications.push(obj);
+        }
+      });
+
+      if (notifications.length === 0) {
+        return;
+      }
+
+      notifications.sort((a, b) => b.id - a.id);
+      badge.innerHTML = notifications.length;
+      badge.style.display = "inline-block";
+      adminDropDown.style.padding = "0px 0px";
+      return;
+    }
+
+    badge.style.display = "none";
+    return;
+  };
+
+  const readNotification = async (nId, tId) => {
+    let config = {
+      method: "POST",
+      url: `${baseUrl}notification/action`,
+      data: Object.assign(data, {
+        ticket: tId,
+        id: nId,
+      }),
+    };
+
+    let result = await axios(config)
+      .then(function (response) {
+        return response;
+      })
+      .catch(function (error) {
+        return error;
+      });
+
+    if (result.status !== 200) {
+      console.log(result);
+    }
+
+    window.location.replace(result.data.url);
+  };
+
+  onload = async (event) => {
+    fetchNotification();
+  };
+</script>

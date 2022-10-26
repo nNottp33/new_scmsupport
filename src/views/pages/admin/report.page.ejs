@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../partials/head.ejs'); %>
+  </head>
+  <body class="g-sidenav-show bg-gray-100">
+    <%- include('../../partials/admin/sidebar.ejs'); %>
+    <main
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
+    >
+      <%- include('../../partials/navbar.ejs'); %>
+
+      <div v-cloak id="app">
+        <v-app>
+          <div class="container-fluid py-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="card mb-4">
+                  <div class="card-header pb-3">
+                    <div class="row">
+                      <div class="col-12 col-md-4">
+                        <h6>Report ticket</h6>
+                        <div class="sub-title">รายงานปัญหา</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <form @submit.prevent="onSearch">
+                        <div class="row">
+                          <!-- date picket startdate -->
+                          <div class="col-xl-2 col-12">
+                            <v-dialog
+                              ref="dialogStart"
+                              v-model="formSearch.mStart"
+                              :return-value.sync="formSearch.dateStart"
+                              persistent
+                              width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="formSearch.dateStart"
+                                  label="Start date"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="formSearch.dateStart"
+                                scrollable
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="formSearch.mStart = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.dialogStart.save(formSearch.dateStart)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </div>
+                          <!-- date picker end date -->
+
+                          <!-- date picker enddate -->
+                          <div class="col-xl-2 col-12">
+                            <v-dialog
+                              ref="dialogEnd"
+                              v-model="formSearch.mEnd"
+                              :return-value.sync="formSearch.dateEnd"
+                              persistent
+                              width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="formSearch.dateEnd"
+                                  label="End date"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
+                                v-model="formSearch.dateEnd"
+                                scrollable
+                              >
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="formSearch.mEnd = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.dialogEnd.save(formSearch.dateEnd)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </div>
+                          <!-- end date picker enddate -->
+
+                          <!-- select catalog -->
+                          <div class="col-xl-3 col-12">
+                            <v-select
+                              class="pt-0 pa-5"
+                              v-model="formSearch.selectCatalog"
+                              :items="catalogs"
+                              item-text="catalog_nameTH"
+                              item-value="catalog_id"
+                              label="Filters by Group"
+                              multiple
+                              chips
+                            >
+                              <template v-slot:selection="{ item, index }">
+                                <v-chip
+                                  color="orange"
+                                  class="text-white"
+                                  v-if="index === 0"
+                                >
+                                  <span>{{ item.catalog_nameTH }}</span>
+                                </v-chip>
+                                <span
+                                  v-if="index === 1"
+                                  class="grey--text text-caption"
+                                >
+                                  (+{{ formSearch.selectCatalog.length - 1 }}
+                                  others)
+                                </span>
+                              </template>
+                            </v-select>
+                          </div>
+                          <!-- end select catalog -->
+
+                          <!-- select user -->
+                          <div class="col-xl-3 col-12">
+                            <v-select
+                              class="pt-0 pa-5"
+                              v-model="formSearch.selectUsers"
+                              :items="users"
+                              item-text="mname"
+                              item-value="mcode"
+                              label="Filters by User"
+                              multiple
+                              chips
+                            >
+                              <template v-slot:selection="{ item, index }">
+                                <v-chip
+                                  color="orange"
+                                  class="text-white"
+                                  v-if="index === 0"
+                                >
+                                  <span>{{ item.mname }}</span>
+                                </v-chip>
+                                <span
+                                  v-if="index === 1"
+                                  class="grey--text text-caption"
+                                >
+                                  (+{{ formSearch.selectUsers.length - 1 }}
+                                  others)
+                                </span>
+                              </template>
+                            </v-select>
+                          </div>
+                          <!-- end select user -->
+
+                          <!-- btn search -->
+                          <div class="col-xl-2 col-12">
+                            <button
+                              type="submit"
+                              class="btn bg-gradient-primary btn-search__report"
+                            >
+                              <i
+                                class="fas fa-search text-white mr-2"
+                                aria-hidden="true"
+                              >
+                              </i>
+                              Search
+                            </button>
+                          </div>
+                          <!-- end btn search -->
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <!-- table -->
+                  <div class="card-body px-3 pt-0 pb-2">
+                    <!-- search -->
+                    <div
+                      class="px-5 ms-md-auto pe-md-3 d-flex justify-end mb-3"
+                    >
+                      <div class="input-group search___bar">
+                        <span class="input-group-text text-body"
+                          ><i class="fas fa-search" aria-hidden="true"></i
+                        ></span>
+                        <input
+                          v-model="table.search"
+                          type="text"
+                          class="form-control px-3"
+                          placeholder="Type here..."
+                        />
+                      </div>
+                    </div>
+
+                    <div class="table-responsive px-2">
+                      <v-data-table
+                        class="table align-items-center mb-0"
+                        :headers="table.headers"
+                        :items="table.items"
+                        :search="table.search"
+                        :items-per-page="5"
+                        class="elevation-1"
+                      >
+                        <!-- DATE CREATED -->
+                        <template v-slot:item.create_date="{ item }">
+                          <span class="text-secondary text-xs font-weight-bold">
+                            {{
+                              moment
+                                .unix(item.create_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+                        </template>
+
+                        <!-- INFORMER -->
+                        <template v-slot:item.mname="{ item }">
+                          <div class="d-flex px-2 py-1">
+                            <div>
+                              <v-avatar
+                                class="me-3 white--text"
+                                color="orange"
+                                rounded
+                                size="30"
+                              >
+                                {{ item.mname.charAt(0) }}
+                              </v-avatar>
+                            </div>
+                            <div
+                              class="d-flex flex-column justify-content-center"
+                            >
+                              <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
+                              <p class="text-xs text-secondary mb-0">
+                                {{ item.mcode }}
+                              </p>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- TYPE -->
+                        <template v-slot:item.catalog_name="{ item }">
+                          <p class="text-xs font-weight-bold mb-0">
+                            {{ item.catalog_nameTH }}
+                          </p>
+                          <p class="text-xs text-secondary mb-0">
+                            {{ item.catalog_nameEN }}
+                          </p>
+                        </template>
+
+                        <!-- STATUS -->
+                        <template v-slot:item.status="{ item }">
+                          <span
+                            v-if="item.status == 'Close'"
+                            class="badge badge-font-dark badge-sm bg-gradient-success"
+                          >
+                            {{ item.status }}</span
+                          >
+
+                          <span
+                            v-else
+                            class="badge badge-sm badge-font-dark bg-gradient-warning"
+                          >
+                            {{ item.status }}</span
+                          >
+                        </template>
+
+                        <!-- LAST UPDATE -->
+                        <template v-slot:item.approve_date="{ item }">
+                          <span
+                            v-if="item.approve_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.approve_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
+                            v-else-if="item.close_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.close_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
+                            v-else
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            -
+                          </span>
+                        </template>
+
+                        <!-- VIEW -->
+                        <template v-slot:item.actions="{ item }">
+                          <v-btn
+                            small
+                            @click="window.location.href=`/admin/support/scm/thread/detail/${item.ticket_id}`"
+                            outlined
+                            color="cyan"
+                            class="white--text actions-btn"
+                          >
+                            <v-icon> mdi-note-search </v-icon>
+                          </v-btn>
+                        </template>
+                      </v-data-table>
+                    </div>
+                  </div>
+                  <!-- end table -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </v-app>
+      </div>
+    </main>
+
+    <footer><%- include('../../partials/footer.ejs'); %></footer>
+
+    <script type="text/javascript">
+      const baseUrl = "<%- baseUrl %>";
+      const role = "<%- role %>";
+
+      const catalogs = JSON.parse(`<%-JSON.stringify(catalogs)%>`);
+      const users = JSON.parse(`<%-JSON.stringify(users)%>`);
+
+      const app = new Vue({
+        el: "#app",
+        vuetify: new Vuetify(), // called vuetify
+        data: {
+          formSearch: {
+            dateStart: new Date(
+              Date.now() - new Date().getTimezoneOffset() * 60000,
+            )
+              .toISOString()
+              .substr(0, 10),
+            dateEnd: new Date(
+              Date.now() - new Date().getTimezoneOffset() * 60000,
+            )
+              .toISOString()
+              .substr(0, 10),
+            mStart: false,
+            mEnd: false,
+            selectUsers: [],
+            selectCatalog: [],
+          },
+          table: {
+            headers: [
+              {
+                text: "TICKETID",
+                align: "start",
+                value: "ticket_id",
+              },
+
+              {
+                text: "INFORMER",
+                value: "mname",
+              },
+              {
+                text: "TICKET TYPE",
+                value: "catalog_name",
+              },
+              {
+                text: "STATUS",
+                align: "center",
+                value: "status",
+              },
+              {
+                text: "DATE CREATED",
+                value: "create_date",
+              },
+              {
+                text: "LAST UPDATE",
+                align: "center",
+                value: "approve_date",
+              },
+              {
+                text: "PROCESS TIME",
+                align: "center",
+                value: "p_time",
+              },
+              {
+                align: "center",
+                value: "actions",
+              },
+            ],
+
+            items: [],
+            search: "",
+          },
+        },
+
+        watch: {},
+
+        computed: {},
+
+        methods: {
+          async onSearch() {
+            let result = await axios
+              .post(`${baseUrl}admin/report/result`, this.formSearch)
+              .then(function (response) {
+                return response;
+              })
+              .catch(function (error) {
+                return error.response;
+              });
+
+            if (result.status !== 200) {
+              this.snackbar = true;
+              this.text = result.data.message;
+              return;
+            }
+
+            return (this.table.items = result.data);
+          },
+        },
+
+        created() {},
+
+        mounted() {},
+
+        updated() {},
+      });
+    </script>
+  </body>
+</html>

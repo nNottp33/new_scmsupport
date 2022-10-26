@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../partials/head.ejs'); %>
+  </head>
+
+  <body>
+    <!-- navbar -->
+    <%- include('../../partials/navbar.ejs'); %>
+
+    <div v-cloak id="app">
+      <!-- For render vuetify  -->
+      <v-app>
+        <!-- content -->
+        <main
+          class="main-content position-relative max-height-vh-100 h-100 border-radius-lg content"
+        >
+          <div class="container-fluid py-2">
+            <div class="row">
+              <div class="col-12">
+                <div class="card mb-4">
+                  <div class="card-header pb-3">
+                    <div class="row">
+                      <div class="col-12 col-md-4">
+                        <h6>History ticket</h6>
+                        <div class="sub-title">ประวัติการสร้าง Ticket</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <form @submit.prevent="onSearch">
+                        <div class="row">
+                          <!-- date picket startdate -->
+                          <div class="col-md-3 col-12">
+                            <v-dialog
+                              ref="dialogStart"
+                              v-model="mStart"
+                              :return-value.sync="dateStart"
+                              persistent
+                              width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="dateStart"
+                                  label="Start date"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker v-model="dateStart" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="mStart = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.dialogStart.save(dateStart)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </div>
+                          <!-- date picker end date -->
+
+                          <!-- date picker enddate -->
+                          <div class="col-md-3 col-12">
+                            <v-dialog
+                              ref="dialogEnd"
+                              v-model="mEnd"
+                              :return-value.sync="dateEnd"
+                              persistent
+                              width="290px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="dateEnd"
+                                  label="End date"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker v-model="dateEnd" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="mEnd = false"
+                                >
+                                  Cancel
+                                </v-btn>
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.dialogEnd.save(dateEnd)"
+                                >
+                                  OK
+                                </v-btn>
+                              </v-date-picker>
+                            </v-dialog>
+                          </div>
+                          <!-- end date picker enddate -->
+
+                          <!-- select status -->
+                          <div class="col-md-3 col-12">
+                            <v-select
+                              class="pt-0"
+                              v-model="selectedStatus"
+                              :items="defaultStatus"
+                              item-text="text"
+                              item-value="value"
+                              label="Filters by status"
+                              multiple
+                              chips
+                            >
+                              <template v-slot:selection="{ item, index }">
+                                <v-chip
+                                  color="orange"
+                                  class="text-white"
+                                  v-if="index === 0"
+                                >
+                                  <span>{{ item.text }}</span>
+                                </v-chip>
+                                <span
+                                  v-if="index === 1"
+                                  class="grey--text text-caption"
+                                >
+                                  (+{{ selectedStatus.length - 1 }} others)
+                                </span>
+                              </template>
+                            </v-select>
+                          </div>
+                          <!-- end select status -->
+
+                          <!-- btn search -->
+                          <div
+                            class="col-md-3 col-12 m-auto justify-content-center text-center"
+                          >
+                            <button
+                              type="submit"
+                              class="btn bg-gradient-primary btn-search__history"
+                            >
+                              <i
+                                class="fas fa-search text-white mr-2"
+                                aria-hidden="true"
+                              >
+                              </i>
+                              Search
+                            </button>
+                          </div>
+
+                          <!-- end btn search -->
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <!-- table -->
+                  <div class="card-body px-3 pt-0 pb-2">
+                    <!-- search -->
+                    <div
+                      class="search__bar ms-md-auto pe-md-3 d-flex align-items-center mb-3"
+                    >
+                      <div class="input-group">
+                        <span class="input-group-text text-body">
+                          <i class="fas fa-search" aria-hidden="true"></i>
+                        </span>
+                        <input
+                          v-model="table.search"
+                          type="text"
+                          class="form-control px-3"
+                          placeholder="Type here..."
+                        />
+                      </div>
+                    </div>
+
+                    <div class="table-responsive px-2">
+                      <v-data-table
+                        class="table align-items-center mb-0"
+                        :headers="table.headers"
+                        :items="table.items"
+                        :search="table.search"
+                        :items-per-page="5"
+                        class="elevation-1"
+                      >
+                        <!-- DATE CREATED -->
+                        <template v-slot:item.create_date="{ item }">
+                          <span class="text-secondary text-xs font-weight-bold">
+                            {{
+                              moment
+                                .unix(item.create_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+                        </template>
+
+                        <!-- INFORMER -->
+                        <template v-slot:item.mname="{ item }">
+                          <div class="d-flex px-2 py-1">
+                            <div>
+                              <v-avatar
+                                class="me-3 white--text"
+                                :color="profileColor"
+                                rounded
+                                size="30"
+                              >
+                                {{ item.mname.charAt(0) }}
+                              </v-avatar>
+                            </div>
+                            <div
+                              class="d-flex flex-column justify-content-center"
+                            >
+                              <h6 class="mb-0 text-sm">{{ item.mname }}</h6>
+                              <p class="text-xs text-secondary mb-0">
+                                {{ item.mcode }}
+                              </p>
+                            </div>
+                          </div>
+                        </template>
+
+                        <!-- TYPE -->
+                        <template v-slot:item.catalog_name="{ item }">
+                          <p class="text-xs font-weight-bold mb-0">
+                            {{ item.catalog_nameTH }}
+                          </p>
+                          <p class="text-xs text-secondary mb-0">
+                            {{ item.catalog_nameEN }}
+                          </p>
+                        </template>
+
+                        <!-- STATUS -->
+                        <template v-slot:item.status="{ item }">
+                          <span
+                            v-if="item.status == 'Close'"
+                            class="badge badge-font-dark badge-sm bg-gradient-success"
+                          >
+                            {{ item.status }}</span
+                          >
+
+                          <span
+                            v-else
+                            class="badge badge-sm badge-font-dark bg-gradient-warning"
+                          >
+                            {{ item.status }}</span
+                          >
+                        </template>
+
+                        <!-- LAST UPDATE -->
+                        <template v-slot:item.approve_date="{ item }">
+                          <span
+                            v-if="item.approve_date != 0"
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            {{
+                              moment
+                                .unix(item.approve_date)
+                                .locale("th")
+                                .format("DD/MM/YYYY HH:mm")
+                            }}</span
+                          >
+
+                          <span
+                            v-else
+                            class="text-secondary text-xs font-weight-bold"
+                          >
+                            -
+                          </span>
+                        </template>
+
+                        <!-- VIEW -->
+                        <template v-slot:item.actions="{ item }">
+                          <v-btn
+                            small
+                            @click="window.location.href=`/user/support/scm/thread/detail/${item.ticket_id}`"
+                            outlined
+                            color="cyan"
+                            class="white--text actions-btn"
+                          >
+                            <v-icon> mdi-note-search </v-icon>
+                          </v-btn>
+                        </template>
+                      </v-data-table>
+                    </div>
+                  </div>
+                  <!-- end table -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </v-app>
+    </div>
+
+    <!-- new ticket modal end -->
+    <%- include('../../partials/footer.ejs'); %>
+
+    <script type="text/javascript">
+      const baseUrl = "<%- baseUrl %>";
+      const role = "<%- role %>";
+
+      let app = new Vue({
+        el: "#app",
+        vuetify: new Vuetify(), // called vuetify
+        data: {
+          dateStart: new Date(
+            Date.now() - new Date().getTimezoneOffset() * 60000,
+          )
+            .toISOString()
+            .substr(0, 10),
+          dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+            .toISOString()
+            .substr(0, 10),
+          mStart: false,
+          mEnd: false,
+          profileColor: role == "user" ? "orange" : "purple",
+          selectedStatus: null,
+          defaultStatus: [
+            {
+              value: 1,
+              text: "Open ticket",
+            },
+            {
+              value: 2,
+              text: "Pending",
+            },
+            {
+              value: 3,
+              text: "Close",
+            },
+            {
+              value: 4,
+              text: "Cancel",
+            },
+            {
+              value: 5,
+              text: "Reject",
+            },
+          ],
+          table: {
+            headers: [
+              {
+                text: "TICKETID",
+                align: "start",
+                value: "ticket_id",
+              },
+              {
+                text: "DATE CREATED",
+                value: "create_date",
+              },
+              {
+                text: "INFORMER",
+                value: "mname",
+              },
+              {
+                text: "TICKET TYPE",
+                value: "catalog_name",
+              },
+              {
+                text: "STATUS",
+                align: "center",
+                value: "status",
+              },
+              {
+                text: "LAST UPDATE",
+                align: "center",
+                value: "approve_date",
+              },
+              {
+                align: "center",
+                value: "actions",
+              },
+            ],
+
+            items: [],
+            search: "",
+          },
+        },
+
+        watch: {},
+
+        computed: {},
+
+        methods: {
+          async loadTicket() {
+            let config = {
+              method: "POST",
+              url: `${baseUrl}user/ticket/list`,
+              data: {
+                status: this.defaultStatus.map(({ key, value }) => value),
+              },
+            };
+
+            await axios(config)
+              .then((response) => (this.table.items = response.data.data))
+              .catch((error) => console.log(error));
+          },
+
+          async onSearch() {
+            let config = {
+              method: "POST",
+              url: `${baseUrl}user//ticket/history/search`,
+              data: {
+                status: this.selectedStatus
+                  ? this.selectedStatus
+                  : this.defaultStatus.map(({ key, value }) => value),
+                dateStart: this.dateStart,
+                dateEnd: this.dateEnd,
+              },
+            };
+
+            await axios(config)
+              .then((response) => (this.table.items = response.data.data))
+              .catch((error) => console.log(error));
+          },
+        },
+
+        async created() {
+          await this.loadTicket();
+        },
+
+        mounted() {},
+      });
+    </script>
+  </body>
+</html>
