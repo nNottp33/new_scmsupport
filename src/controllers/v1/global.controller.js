@@ -132,6 +132,7 @@ const DeleteComment = async (req, res) => {
 
 const ActionReadUnRead = async (req, res) => {
     let { ticket, user, id } = req.body;
+    let { role } = req.session.sessionsData;
 
     try {
 
@@ -139,9 +140,11 @@ const ActionReadUnRead = async (req, res) => {
             .where('n_log.id', id)
             .update({
                 uread: conKnex.raw('JSON_ARRAY_APPEND( uread, "$", ?)', user)
+            }).then(() => {
+                res.status(httpStatus.OK).send({
+                    url: `${config.baseUrl}${role}/support/scm/thread/detail/${ticket}`
+                })
             })
-
-        return res.status(httpStatus.OK)
 
     } catch (e) {
         logger.error(chalk.bold.red(e));

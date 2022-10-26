@@ -95,7 +95,7 @@
   const badge = document.querySelector(".badge-count");
   const adminDropDown = document.querySelector(".admin-dropdown");
   const dropDownBtn = document.querySelector("#dropdownMenuButton");
-  let notifications;
+  let notifications = [];
 
   let data = {
     user: "<%- id %>",
@@ -112,9 +112,9 @@
 
     notifications.forEach((obj, index, array) => {
       html += `<li class="mb-2">
-              <a class="dropdown-item border-radius-md"href="${baseUrl}admin/support/scm/thread/detail/${
-        obj.ticket_id
-      }">
+              <a class="dropdown-item border-radius-md" href="#" onclick="readNotification(${
+                obj.id
+              }, ${obj.ticket_id})">
                 <div class="d-flex py-1">
                   <div class="my-auto">
                     <div
@@ -185,11 +185,20 @@
     }
 
     if (result.data.length !== 0) {
+      result.data.forEach((obj, index, arr) => {
+        if (!JSON.parse(obj.uread).includes(data.user)) {
+          notifications.push(obj);
+        }
+      });
+
+      if (notifications.length === 0) {
+        return;
+      }
+
+      notifications.sort((a, b) => b.id - a.id);
+      badge.innerHTML = notifications.length;
       badge.style.display = "inline-block";
       adminDropDown.style.padding = "0px 0px";
-      badge.innerHTML = result.data.length;
-      notifications = result.data;
-      notifications.sort((a, b) => b.id - a.id);
       return;
     }
 
@@ -202,8 +211,8 @@
       method: "POST",
       url: `${baseUrl}notification/action`,
       data: Object.assign(data, {
-        id: nId,
         ticket: tId,
+        id: nId,
       }),
     };
 
@@ -219,7 +228,7 @@
       console.log(result);
     }
 
-    window.location.href = `admin/support/scm/thread/detail/${tId}`;
+    window.location.replace(result.data.url);
   };
 
   onload = async (event) => {

@@ -201,10 +201,6 @@ const FetchedNotifications = async (req, res) => {
       .innerJoin('f_ticket_detail', 'ntf_comment.ticket_id', 'f_ticket_detail.ticket_id')
       .innerJoin('f_ticket', 'ntf_comment.ticket_id', 'f_ticket.ticket_id')
       .innerJoin('d_catalog', 'd_catalog.catalog_id', 'f_ticket.catalog_id')
-    // .whereRaw('? IN ( JSON_EXTRACT(ntf_comment.uread, "$[*]") )', user)
-
-    console.log(user);
-    console.log(resultNotification);
 
     return res.status(httpStatus.OK).send(resultNotification);
 

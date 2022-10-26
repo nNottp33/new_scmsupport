@@ -3,7 +3,7 @@
   const dropDown = document.querySelector(".dropdown-menu");
   const badge = document.querySelector(".badge-count");
   const dropDownBtn = document.querySelector("#userDropDownBtn");
-  let notifications;
+  let notifications = [];
 
   let data = {
     user: "<%- memId %>",
@@ -46,7 +46,7 @@
       if (obj.type !== "ticket") {
         html += `<p class="text-sm font-weight-normal mb-1">
                                                         on post
-                                                        <span class="text-dark font-weight-bold"> ${obj.d_ticket} 
+                                                        <span class="text-dark font-weight-bold"> ${obj.d_ticket}
                                                         </span>
                                                       </p> `;
       }
@@ -88,14 +88,23 @@
       });
 
     if (result.status !== 200) {
-      console.log(result);
+      console.log(result.data);
     }
 
-    if (result.data.length !== 0) {
-      badge.style.display = "inline-block";
-      badge.innerHTML = result.data.length;
-      notifications = result.data;
+    if (result.data.length > 0) {
+      result.data.forEach((obj, index, arr) => {
+        if (!JSON.parse(obj.uread).includes(data.user)) {
+          notifications.push(obj);
+        }
+      });
+
+      if (notifications.length === 0) {
+        return;
+      }
+
       notifications.sort((a, b) => b.id - a.id);
+      badge.innerHTML = notifications.length;
+      badge.style.display = "inline-block";
       return;
     }
 
@@ -109,8 +118,8 @@
       method: "POST",
       url: `${baseUrl}notification/action`,
       data: Object.assign(data, {
-        id: nId,
         ticket: tId,
+        id: nId,
       }),
     };
 
@@ -126,7 +135,7 @@
       console.log(result);
     }
 
-    // window.location.href = `user/support/scm/thread/detail/${tId}`;
+    window.location.replace(result.data.url);
   };
 
   onload = async (event) => {
